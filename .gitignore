@@ -128,3 +128,15 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Hardhat files
+/tests/hardhat/cache
+/tests/hardhat/artifacts
+
+# TypeChain files
+/tests/hardhat/typechain
+/tests/hardhat/typechain-types
+
+# solidity-coverage files
+/tests/hardhat/coverage
+/tests/hardhat/coverage.json
