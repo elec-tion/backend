@@ -27,37 +27,44 @@ contract ElectionContract {
         string[] district_id;
     }
 
+    struct Admin {
+        address wallet_id;
+    }
+
+    struct ElectionCommittee {
+        address wallet_id;
+    }
+
+    Admin public admin;
     Election[] public elections;
     District[] public districts;
     Candidate[] public candidates;
     mapping(address => Voter) voters;
     mapping(address => bool) public voter_exists;
+    mapping(address => ElectionCommittee) electionCommitteeMembers;
+    mapping(address => bool) public electionCommitteeMembers_exists;
 
     // Constructor to set the initial admin
     constructor() {
-        admin = msg.sender;
+        admin.wallet_id = msg.sender;
     }
 
     // Function to add a new election committee member
     function addElectionCommitteeMember(address _member) public onlyAdmin {
-        electionCommitteeMembers[_member] = true;
+        electionCommitteeMembers_exists[_member] = true;
     }
 
     // Function to remove an election committee member
     function removeElectionCommitteeMember(address _member) public onlyAdmin {
-        electionCommitteeMembers[_member] = false;
+        delete electionCommitteeMembers_exists[_member];
     }
 
-    function createElection(
-        string memory _name,
-        uint256 _startDate,
-        uint256 _endDate
-    ) public onlyAdminOrElectionCommittee{
+    function createElection(string memory _name, uint256 _startDate, uint256 _endDate) public onlyAdminOrElectionCommittee {
         uint electionId = elections.length;
         // Initialize empty arrays for district and candidate indices
         uint[] memory emptyDistrictIndices;
         uint[] memory emptyCandidateIndices;
-        Election memory election = Election(
+        Election memory election = Election (
             electionId,
             _name,
             emptyDistrictIndices,
@@ -70,11 +77,7 @@ contract ElectionContract {
 
     // adding a new district to a specific election
     // create new District struct, add it to the districts array, and update the district indices for the specified election
-    function addDistrict(
-        uint _electionId,
-        string memory _name,
-        string memory _id
-    ) public onlyAdmin{
+    function addDistrict(uint _electionId, string memory _name, string memory _id) public onlyAdmin {
         require(_electionId < elections.length, "Invalid election ID");
         uint districtIndex = districts.length;
         districts.push(District(_name, _id));
@@ -83,12 +86,7 @@ contract ElectionContract {
 
     // adding a new candidate to a specific election
     // create new Candidate struct, add it to the candidates array, and update the candidate indices for the specified election
-    function addCandidate(
-        uint _electionId,
-        string memory _name,
-        string memory _district_id,
-        address _wallet_id
-    ) public onlyAdmin{
+    function addCandidate(uint _electionId, string memory _name, string memory _district_id, address _wallet_id) public onlyAdmin {
         require(_electionId < elections.length, "Invalid election ID");
         uint candidateIndex = candidates.length;
         candidates.push(Candidate(_name, _district_id, _wallet_id));
@@ -117,7 +115,7 @@ contract ElectionContract {
     }
 
     // Function to update the elections a voter can participate in
-    function updateVotersElections(uint _electionId, address _walletId) public onlyAdminOrElectionCommittee{
+    function updateVotersElections(uint _electionId, address _walletId) public onlyAdminOrElectionCommittee {
         require(voter_exists[_walletId], "User not exist");
         require(_electionId < elections.length, "Invalid election ID");
 
@@ -128,10 +126,7 @@ contract ElectionContract {
     // user can call this function see their elections that they can participate
     function getVotersElections() public view returns (uint[] memory){
         require(voter_exists[msg.sender], "User not exist");
-        require(
-            voters[msg.sender].election_ids.length != 0,
-            "Voter can't enter any election"
-        );
+        require(voters[msg.sender].election_ids.length != 0, "Voter can't enter any election");
         // Return the array of election IDs the voter can participate in
         return voters[msg.sender].election_ids;
     }
@@ -145,31 +140,28 @@ contract ElectionContract {
         return elections.length;
     }
 
-    address public admin;
-    mapping(address => bool) public electionCommitteeMembers;
-
     // Modifier to restrict access to admins only
     modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can call this function");
+        require(msg.sender == admin.wallet_id, "Only admin can call this function");
         _;
     }
 
     // Modifier to restrict access to election committee members only
     modifier onlyElectionCommittee() {
         require(
-            electionCommitteeMembers[msg.sender],
+            electionCommitteeMembers_exists[msg.sender],
             "Only election committee members can call this function"
         );
         _;
     }
 
     modifier onlyAdminOrElectionCommittee() {
-    require(
-        msg.sender == admin || electionCommitteeMembers[msg.sender],
-        "Only admin or election committee members can call this function"
-    );
-    _;
-}
+        require(
+            msg.sender == admin.wallet_id || electionCommitteeMembers_exists[msg.sender],
+            "Only admin or election committee members can call this function"
+        );
+        _;
+    }
 
   
 
