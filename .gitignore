@@ -140,3 +140,6 @@ dist
 # solidity-coverage files
 /tests/hardhat/coverage
 /tests/hardhat/coverage.json
+
+# vscode files
+.vscode/*
