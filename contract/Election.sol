@@ -167,6 +167,8 @@ contract ElectionContract {
         districts[_name] = District(_name, _id);
     }
 
+    // adding a new district to a specific election
+    // create new District struct, add it to the districts array, and update the district indices for the specified election
     // Function to add a new district for election committee members
     function addDistrict(string memory _name, string memory _id) public onlyElectionCommittee {
         // Check if the district already exists
@@ -226,6 +228,8 @@ contract ElectionContract {
         delete isDistrictExists[_name];
     }
 
+    // adding a new candidate to a specific election
+    // create new Candidate struct, add it to the candidates array, and update the candidate indices for the specified election
     // Function to add a new candidate for admin
     function addCandidate(string memory _name, string memory _districtID, address _wallet) public onlyAdmin {
         // Check if the candidate already exists
