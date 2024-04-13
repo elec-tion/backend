@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import fs from 'fs';
+import path from 'path';
 import dotenv from 'dotenv'; dotenv.config();
 import { exit } from 'process';
 
@@ -11,11 +12,11 @@ const account = web3.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_
 const txnCount = await web3.eth.getTransactionCount(account.address);
 
 let txOptions = {
-	nonce: web3.utils.numberToHex(txnCount),
-	from: account.address,
-	to: null, // public tx
-	value: "0x0",
-	data: "0x" + contractBytecode + contractConstructorInit, // contract binary appended with initialization value
+    nonce: web3.utils.numberToHex(txnCount),
+    from: account.address,
+    to: null, // public tx
+    value: "0x0",
+    data: "0x" + contractBytecode + contractConstructorInit, // contract binary appended with initialization value
 };
 
 // estimate gas
@@ -34,6 +35,9 @@ const signedTx = await web3.eth.accounts.signTransaction(txOptions, account.priv
 
 console.log("Sending transaction...");
 const txr = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+
+const addressPath = path.join('./build', 'ElectionContract.address');
+fs.writeFileSync(addressPath, txr.contractAddress, 'utf-8');
 
 console.log("tx : " + JSON.stringify({
     blockHash: txr.blockHash,
