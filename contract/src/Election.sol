@@ -425,9 +425,9 @@ contract ElectionContract {
     }
 
     // Funtion to return specific election's details
-    function getElectionDetails(uint _id) public view returns (Election) {
+    function getElectionDetails(uint _id) public view returns (Election memory) {
         // Check if the election exists
-        require(isElectionExists[_electionId], "Election does not exist");
+        require(isElectionExists[_id], "Election does not exist");
 
         return (elections[_id]);
     }
