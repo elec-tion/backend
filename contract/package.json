@@ -1,19 +1,19 @@
 {
-  "name": "contract-utils",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "compile": "node compiler/compile.js",
-    "deploy": "node deployer/deploy.js",
-    "start": "node compiler/compile.js && node deployer/deploy.js"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "web3": "^4.6.0",
-    "web3-eth": "^4.5.0",
-    "web3-quorum": "^0.1.1"
-  },
-  "devDependencies": {
-    "solc": "0.8.19"
-  }
+	"name": "contract-utils",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"compile": "node compiler/compile.js",
+		"deploy": "node deployer/deploy.js",
+		"start": "node compiler/compile.js && node deployer/deploy.js"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"web3": "^4.6.0",
+		"web3-eth": "^4.5.0",
+		"web3-quorum": "^0.1.1"
+	},
+	"devDependencies": {
+		"solc": "0.8.19"
+	}
 }

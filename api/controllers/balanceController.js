@@ -27,21 +27,23 @@ const updateBalance = asyncHandler(async (req, res) => {
 	res.status(200).json();
 });
 
-// // @route DELETE /api/bisiler/:id
-// // @access private
-// const deleteBisiler = asyncHandler(async (req, res) => {
-//     res.status(200).json({ message: `Delete bisiler ${req.params.id}` });
-// });
+/*
+	// @route DELETE /api/bisiler/:id
+	// @access private
+	const deleteBisiler = asyncHandler(async (req, res) => {
+		res.status(200).json({ message: `Delete bisiler ${req.params.id}` });
+	});
 
-// // @route POST /api/bisiler
-// // @access private
-// const setBisiler = asyncHandler(async (req, res) => {
-//     if (!req.body.text) {
-//         res.status(400);
-//         throw new Error("Please add a text field");
-//     }
-//     res.status(200).json({ message: "Set Bisiler" });
-// });
+	// @route POST /api/bisiler
+	// @access private
+	const setBisiler = asyncHandler(async (req, res) => {
+		if (!req.body.text) {
+			res.status(400);
+			throw new Error("Please add a text field");
+		}
+		res.status(200).json({ message: "Set Bisiler" });
+	});
+*/
 
 module.exports = {
 	getBalance,
