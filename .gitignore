@@ -142,7 +142,7 @@ dist
 /tests/hardhat/coverage.json
 
 # vscode personal files
-.vscode/settşngs.json
+.vscode/settings.json
 
 # contract artifacts
 contract/build/
