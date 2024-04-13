@@ -1,0 +1,22 @@
+{
+    "tasks": [
+        { // compile the contract
+            "type": "npm",
+            "script": "compile",
+            "path": "contract",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: compile - contract",
+            "detail": "node compiler/compile.js",
+        },
+        { // deploy the contract
+            "type": "npm",
+            "script": "deploy",
+            "path": "contract",
+            "problemMatcher": [],
+            "label": "npm: deploy - contract",
+            "detail": "node deployer/deploy.js",
+            "group": "build",
+        }
+    ]
+}
