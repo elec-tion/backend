@@ -9,9 +9,7 @@ const createElection = asyncHandler(async (req, res) => {
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods
-			.createElection(req.params.name, req.params.startDate, req.params.endDate)
-			.encodeABI(),
+		data: contractInstance.methods.createElection(req.params.name, req.params.startDate, req.params.endDate).encodeABI(),
 	};
 
 	// estimate gas
@@ -32,42 +30,37 @@ const createElection = asyncHandler(async (req, res) => {
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
 
 	console.log("createElection", txr);
-  // TODO: return created election details
-  // getElectionDetails(getElectionsLength());
+	// TODO: return created election details
+	// getElectionDetails(getElectionsLength());
 	res.status(200).json({ success: 1 });
 });
 
 // @route GET /api/election/:id
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
-	const fCall = await contractInstance.methods
-		.getElectionDetails(req.params.id)
-		.call();
+	const fCall = await contractInstance.methods.getElectionDetails(req.params.id).call();
 
 	res.status(200).json({
 		id: fCall.id,
 		name: fCall.name,
-    districtIDs: fCall.districtIDs,
-    candidateAddresses: fCall.candidateAddresses,
-    electionCommittee: fCall.electionCommittee,
-    startDate: fCall.startDate,
-    endDate: fCall.endDate
+		districtIDs: fCall.districtIDs,
+		candidateAddresses: fCall.candidateAddresses,
+		electionCommittee: fCall.electionCommittee,
+		startDate: fCall.startDate,
+		endDate: fCall.endDate,
 	});
 });
 
 // @route GET /api/election
 // @access private
 const getElectionsLength = asyncHandler(async (req, res) => {
-	const fCall = await contractInstance.methods
-		.getElectionsLength()
-		.call();
+	const fCall = await contractInstance.methods.getElectionsLength().call();
 
-    console.log(fCall);
+	console.log(fCall);
 	res.status(200).json({
-		success: 1
+		success: 1,
 	});
 });
-
 
 // @route DELETE /api/election/:id
 // @access private
@@ -76,9 +69,7 @@ const removeElection = asyncHandler(async (req, res) => {
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods
-			.removeElection(req.params.id)
-			.encodeABI(),
+		data: contractInstance.methods.removeElection(req.params.id).encodeABI(),
 	};
 
 	// estimate gas
@@ -102,9 +93,8 @@ const removeElection = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1 });
 });
 
-
 module.exports = {
 	getElectionDetails,
-  createElection,
-  removeElection,
+	createElection,
+	removeElection,
 };

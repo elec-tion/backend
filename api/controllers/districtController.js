@@ -10,9 +10,7 @@ const addDistrict = asyncHandler(async (req, res) => {
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods
-			.addDistrict(req.params.name, req.params.id)
-			.encodeABI(),
+		data: contractInstance.methods.addDistrict(req.params.name, req.params.id).encodeABI(),
 	};
 
 	// estimate gas
@@ -39,9 +37,7 @@ const addDistrict = asyncHandler(async (req, res) => {
 // @route GET /api/district/:id
 // @access private
 const getDistrict = asyncHandler(async (req, res) => {
-	const fCall = await contractInstance.methods
-		.getDistrictDetails(req.params.id)
-		.call();
+	const fCall = await contractInstance.methods.getDistrictDetails(req.params.id).call();
 
 	res.status(200).json({
 		id: fCall.districtID,
@@ -56,9 +52,7 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods
-			.addDistrictToElection(req.params.electionId, req.params.districtId)
-			.encodeABI(),
+		data: contractInstance.methods.addDistrictToElection(req.params.electionId, req.params.districtId).encodeABI(),
 	};
 
 	// estimate gas
@@ -89,9 +83,7 @@ const removeDistrictFromElection = asyncHandler(async (req, res) => {
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods
-			.removeDistrictFromElection(req.params.electionId, req.params.districtId)
-			.encodeABI(),
+		data: contractInstance.methods.removeDistrictFromElection(req.params.electionId, req.params.districtId).encodeABI(),
 	};
 
 	// estimate gas
@@ -122,9 +114,7 @@ const removeDistrict = asyncHandler(async (req, res) => {
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods
-			.removeDistrict(req.params.id)
-			.encodeABI(),
+		data: contractInstance.methods.removeDistrict(req.params.id).encodeABI(),
 	};
 
 	// estimate gas

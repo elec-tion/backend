@@ -6,20 +6,20 @@ const asyncHandler = require("express-async-handler");
 // @access private
 const getBalance = asyncHandler(async (req, res) => {
 	let weiBalance = await chain.eth.getBalance(req.params.wallet_id);
-	let ethBalance = chain.utils.fromWei(weiBalance, 'ether');
+	let ethBalance = chain.utils.fromWei(weiBalance, "ether");
 	res.status(200).json({ balance: ethBalance });
 });
-
 
 // @route PUT /api/balance/:wallet_id
 // @access private
 const updateBalance = asyncHandler(async (req, res) => {
-	chain.eth.getBalance(req.params.wallet_id)
-		.then(balance => {
+	chain.eth
+		.getBalance(req.params.wallet_id)
+		.then((balance) => {
 			console.log(`Wallet ${wallet_id} exists on the node.`);
-			console.log(`Balance: ${chain.utils.fromWei(balance, 'ether')} ETH`);
+			console.log(`Balance: ${chain.utils.fromWei(balance, "ether")} ETH`);
 		})
-		.catch(error => {
+		.catch((error) => {
 			console.error(`Error checking wallet existence: ${error}`);
 		});
 
@@ -42,7 +42,6 @@ const updateBalance = asyncHandler(async (req, res) => {
 //     }
 //     res.status(200).json({ message: "Set Bisiler" });
 // });
-
 
 module.exports = {
 	getBalance,
