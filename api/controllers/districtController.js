@@ -49,7 +49,7 @@ const getDistrict = asyncHandler(async (req, res) => {
 	});
 });
 
-// @route PUT /api/district
+// @route PUT /api/district/:electionId/:districtId
 // @access private
 const addDistrictToElection = asyncHandler(async (req, res) => {
 	// Create raw transaction
@@ -82,7 +82,7 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1 });
 });
 
-// @route DELETE /api/district/:id
+// @route DELETE /api/district/:electionId/:districtId
 // @access private
 const removeDistrictFromElection = asyncHandler(async (req, res) => {
 	// Create raw transaction
@@ -144,7 +144,7 @@ const removeDistrict = asyncHandler(async (req, res) => {
 	// send transaction
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
 
-	console.log("addDistrict", txr);
+	console.log("removeDistrict", txr);
 	res.status(200).json({ success: 1 });
 });
 
