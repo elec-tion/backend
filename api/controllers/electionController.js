@@ -1,5 +1,5 @@
-const { chain, contractInstance } = require("../config/chain.js");
-
+const { chain, adminAccount, contractInstance } = require("../config/chain.js");
+const { exit } = require("process");
 const asyncHandler = require("express-async-handler");
 
 // @route POST /api/election/:name/:startDate/:endDate
@@ -38,7 +38,9 @@ const createElection = asyncHandler(async (req, res) => {
 // @route GET /api/election/:id
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
-	const fCall = await contractInstance.methods.getElectionDetails(req.params.id).call();
+	console.log("getElectionDetails", BigInt(req.params.id), parseInt(req.params.id), Number(req.params.id));
+
+	const fCall = await contractInstance.methods.getElectionDetails(Number(req.params.id)).call();
 
 	res.status(200).json({
 		id: fCall.id,
@@ -58,7 +60,7 @@ const getElectionsLength = asyncHandler(async (req, res) => {
 
 	console.log(fCall);
 	res.status(200).json({
-		success: 1,
+		length: Number(fCall),
 	});
 });
 
@@ -95,6 +97,7 @@ const removeElection = asyncHandler(async (req, res) => {
 
 module.exports = {
 	getElectionDetails,
+	getElectionsLength,
 	createElection,
 	removeElection,
 };

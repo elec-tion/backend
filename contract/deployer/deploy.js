@@ -2,19 +2,21 @@ import Web3 from "web3";
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
-dotenv.config();
+import crypto from "crypto";
 import { exit } from "process";
+
+dotenv.config();
 
 const web3 = new Web3(process.env.CHAIN_RPC); // Specify your Quorum node's RPC endpoint
 const contractBytecode = fs.readFileSync("build/ElectionContract.bytecode", "utf8");
 const contractConstructorInit = "";
 
 const adminAccount = web3.eth.accounts.privateKeyToAccount("0x" + crypto.createHash("sha256").update(process.env.ADMIN_KEY).digest("hex"));
-const txnCount = await web3.eth.getTransactionCount(account.address);
+const txnCount = await web3.eth.getTransactionCount(adminAccount.address);
 
 let txOptions = {
 	nonce: web3.utils.numberToHex(txnCount),
-	from: account.address,
+	from: adminAccount.address,
 	to: null, // public tx
 	value: "0x0",
 	data: "0x" + contractBytecode + contractConstructorInit, // contract binary appended with initialization value
@@ -32,7 +34,7 @@ txOptions.gasPrice = "0x0";
 txOptions.gasLimit = gasLimit;
 
 console.log("Creating and signing transaction...");
-const signedTx = await web3.eth.accounts.signTransaction(txOptions, adminAccount.privateKey);
+const signedTx = await adminAccount.signTransaction(txOptions);
 
 console.log("Sending transaction...");
 const txr = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
