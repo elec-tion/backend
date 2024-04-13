@@ -36,7 +36,7 @@ const compiledCode = JSON.parse(solc.compile(JSON.stringify(input)));
 const bytecode = compiledCode.contracts[fileName][contractName].evm.bytecode.object;
 
 // Write the bytecode to a new file
-const bytecodePath = path.join('./build', contractName+'.bytecode');
+const bytecodePath = path.join('./build', contractName + '.bytecode');
 fs.writeFileSync(bytecodePath, bytecode, 'utf-8');
 
 // Log the compiled contract code to the console
@@ -46,7 +46,7 @@ console.log('Contract Bytecode in:', bytecodePath);
 const abi = compiledCode.contracts[fileName][contractName].abi;
 
 // Write the Contract ABI to a new file
-const abiPath = path.join('./build', contractName+'.abi');
+const abiPath = path.join('./build', contractName + '.abi');
 fs.writeFileSync(abiPath, JSON.stringify(abi, null, 4), 'utf-8');
 
 // Log the Contract ABI to the console
