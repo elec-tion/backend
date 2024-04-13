@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", require("./routes/balanceRoutes"));
 app.use("/api", require("./routes/districtRoutes"));
 app.use("/api", require("./routes/electionRoutes"));
+app.use("/api", require("./routes/committeMembersRoutes"));
 
 app.use(errorHandler);
 
