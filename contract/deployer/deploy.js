@@ -8,7 +8,7 @@ const web3 = new Web3(process.env.CHAIN_RPC); // Specify your Quorum node's RPC 
 const contractBytecode = fs.readFileSync('build/ElectionContract.bytecode', 'utf8');
 const contractConstructorInit = "";
 
-const account = web3.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_KEY);
+const adminAccount = web3.eth.accounts.privateKeyToAccount('0x' + crypto.createHash('sha256').update(process.env.ADMIN_KEY).digest('hex'));
 const txnCount = await web3.eth.getTransactionCount(account.address);
 
 let txOptions = {
@@ -31,7 +31,7 @@ txOptions.gasPrice = "0x0";
 txOptions.gasLimit = gasLimit;
 
 console.log("Creating and signing transaction...");
-const signedTx = await web3.eth.accounts.signTransaction(txOptions, account.privateKey);
+const signedTx = await web3.eth.accounts.signTransaction(txOptions, adminAccount.privateKey);
 
 console.log("Sending transaction...");
 const txr = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
