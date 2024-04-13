@@ -435,7 +435,7 @@ contract ElectionContract {
     // Funtion to return specific district's details
     function getDistrictDetails(string memory _id) public view returns (District memory) {
         // Check if the district already exists
-        require(!isDistrictExists[_id], "District already exists");
+        require(isDistrictExists[_id], "District does not exists");
 
         return districts[_id];
     }
