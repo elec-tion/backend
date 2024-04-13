@@ -424,6 +424,23 @@ contract ElectionContract {
         return electionCounter;
     }
 
+    // Funtion to return specific election's details
+    function getElectionDetails(uint _id) public view returns (Election) {
+        // Check if the election exists
+        require(isElectionExists[_electionId], "Election does not exist");
+
+        return (elections[_id]);
+    }
+
+    // Funtion to return specific district's details
+    function getDistrictDetails(string memory _id) public view returns (District memory) {
+        // Check if the district already exists
+        require(!isDistrictExists[_id], "District already exists");
+
+        return districts[_id];
+    }
+
+
     // function allows a voter to cast their vote in a specific election for a particular candidate
     // function vote(uint _electionId, uint _candidateIndex) public {
     //     require(_electionId < elections.length, "Invalid election ID");
