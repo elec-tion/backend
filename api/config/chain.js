@@ -1,11 +1,17 @@
-const { Web3 } = require('web3');
 const fs = require("fs");
+const { Web3 } = require('web3');
+const dotenv = require('dotenv'); dotenv.config();
 
 const chain = new Web3(process.env.CHAIN_RPC);
+const adminAccount = chain.eth.accounts.privateKeyToAccount(process.env.ADMIN_PRIVATE_KEY);
 const contractInstance = new chain.eth.Contract(
-    JSON.parse(fs.readFileSync("../contract/build/ElectionContract.abi","utf-8")),
-    "0x71898C4fe73046Db90C2EcB56d98c5FD27fd4058"
-  );
+	JSON.parse(fs.readFileSync(process.env.CONTRACT_ABI_LOCATION, 'utf-8')),
+	fs.readFileSync(process.env.CONTRACT_ADDRESS_LOCATION, 'utf-8')
+);
 
-module.exports = {chain, contractInstance, Web3};
-
+module.exports = {
+	Web3,
+	chain,
+	contractInstance,
+	adminAccount,
+};
