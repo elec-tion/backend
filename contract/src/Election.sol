@@ -441,12 +441,11 @@ contract ElectionContract {
     }
 
     // Funtion to return specific election's details
-    function getElectionDetails(string memory _id) public view returns (Election memory) {
+    function getElectionDetails(uint _id) public view returns (Election memory) {
         // Check if the election exists
-        uint id = stringToInteger(_id);
-        require(isElectionExists[id], "Election does not exist");
+        require(isElectionExists[_id], "Election does not exist");
 
-        return elections[id];
+        return elections[_id];
     }
 
     // Funtion to return specific candidate's details
@@ -464,21 +463,6 @@ contract ElectionContract {
 
         return districts[_id];
     }
-
-    // Function to convert a string to an unsigned integer. Used when it's needed.
-    function stringToInteger(string memory _str) private pure returns (uint) {
-        bytes memory b = bytes(_str);
-        uint result = 0;
-        for (uint i = 0; i < b.length; i++) {
-            uint8 digit = uint8(b[i]) - 48; // Convert ASCII to integer value
-            if (digit >= 0 && digit <= 9) {
-                result = result * 10 + digit;
-            }
-        }
-        return result;
-    }
-
-
 
     // function allows a voter to cast their vote in a specific election for a particular candidate
     // function vote(uint _electionId, uint _candidateIndex) public {
