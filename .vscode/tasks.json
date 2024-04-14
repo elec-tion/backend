@@ -17,6 +17,24 @@
             "label": "npm: deploy - contract",
             "detail": "node deployer/deploy.js",
             "group": "build",
+        },
+        { // run api with nodemon
+            "type": "npm",
+            "script": "server",
+            "path": "api",
+            "problemMatcher": [],
+            "label": "npm: start - api",
+            "detail": "nodemon server.js",
+            "group": "build",
+        },
+        { // run api with nodejs
+            "type": "npm",
+            "script": "start",
+            "path": "api",
+            "problemMatcher": [],
+            "label": "npm: start - api",
+            "detail": "node server.js",
+            "group": "build",
         }
     ]
 }

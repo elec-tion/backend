@@ -24,5 +24,15 @@
             "cwd": "${workspaceFolder}\\contract",
             "program": "compiler\\compile.js"
         },
+        { // Debugging the api
+            "type": "node",
+            "request": "launch",
+            "name": "API Debug",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "cwd": "${workspaceFolder}\\api",
+            "program": "${workspaceFolder}\\api\\index.js"
+        }
     ]
 }
