@@ -1,5 +1,4 @@
 const { chain, adminAccount, contractInstance } = require("../config/chain.js");
-const { exit } = require("process");
 const asyncHandler = require("express-async-handler");
 contractInstance.handleRevert = true;
 
@@ -16,7 +15,8 @@ const addDistrict = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -58,7 +58,8 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -89,7 +90,8 @@ const removeDistrictFromElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -120,7 +122,8 @@ const removeDistrict = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price

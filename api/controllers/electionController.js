@@ -1,6 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../config/chain.js");
-const { exit } = require("process");
 const asyncHandler = require("express-async-handler");
+contractInstance.handleRevert = true;
 
 // @route POST /api/election/:name/:startDate/:endDate
 // @access private
@@ -15,7 +15,8 @@ const createElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -38,18 +39,20 @@ const createElection = asyncHandler(async (req, res) => {
 // @route GET /api/election/:id
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
-	console.log("getElectionDetails", BigInt(req.params.id), parseInt(req.params.id), Number(req.params.id));
+	console.log("getElectionDetails", BigInt(req.params.id), parseInt(req.params.id), Number(req.params.id), chain.utils.toHex(req.params.id), chain.utils.toBigInt(req.params.id));
 
-	const fCall = await contractInstance.methods.getElectionDetails(Number(req.params.id)).call();
+	const fCall = await contractInstance.methods.getElectionDetails(req.params.id).call();
 
+	console.log(fCall);
 	res.status(200).json({
-		id: fCall.id,
-		name: fCall.name,
-		districtIDs: fCall.districtIDs,
-		candidateAddresses: fCall.candidateAddresses,
-		electionCommittee: fCall.electionCommittee,
-		startDate: fCall.startDate,
-		endDate: fCall.endDate,
+		success: 1,
+		// id: Number(fCall.id),
+		// name: fCall.name,
+		// districtIDs: fCall.districtIDs,
+		// candidateAddresses: fCall.candidateAddresses,
+		// electionCommittee: fCall.electionCommittee,
+		// startDate: Number(fCall.startDate),
+		// endDate: Number(fCall.endDate),
 	});
 });
 
@@ -77,7 +80,8 @@ const removeElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price

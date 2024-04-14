@@ -1,5 +1,4 @@
 const { chain } = require("../config/chain.js");
-
 const asyncHandler = require("express-async-handler");
 
 // @route GET /api/balance/:wallet_id

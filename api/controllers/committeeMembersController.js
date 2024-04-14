@@ -1,6 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../config/chain.js");
-
 const asyncHandler = require("express-async-handler");
+contractInstance.handleRevert = true;
 
 // @route POST /api/committeemember/:adddr/:name
 // @access private
@@ -15,7 +15,8 @@ const addElectionCommitteeMember = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -46,7 +47,8 @@ const addElectionCommitteeMemberToElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -71,13 +73,14 @@ const removeElectionCommitteeMemberFromElection = asyncHandler(async (req, res) 
 	let rawTx = {
 		from: adminAccount.address,
 		to: contractInstance.options.address,
-		data: contractInstance.methods.removeElectionCommitteeMemberFromElection(req.params.addr,req.params.elecId).encodeABI(),
+		data: contractInstance.methods.removeElectionCommitteeMemberFromElection(req.params.addr, req.params.elecId).encodeABI(),
 	};
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -108,7 +111,8 @@ const removeElectionCommitteeMember = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -129,6 +133,6 @@ const removeElectionCommitteeMember = asyncHandler(async (req, res) => {
 module.exports = {
 	addElectionCommitteeMember,
 	addElectionCommitteeMemberToElection,
-    removeElectionCommitteeMemberFromElection,
+	removeElectionCommitteeMemberFromElection,
 	removeElectionCommitteeMember,
 };

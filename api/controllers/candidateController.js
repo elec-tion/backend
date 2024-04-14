@@ -1,6 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../config/chain.js");
-
 const asyncHandler = require("express-async-handler");
+contractInstance.handleRevert = true;
 
 // @route POST /api/candidate/:name/:districtId/:addr
 // @access private
@@ -15,7 +15,8 @@ const addCandidate = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -33,6 +34,22 @@ const addCandidate = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1 });
 });
 
+// @route GET /api/candidate/:addr
+// @access private
+const getCandidate = asyncHandler(async (req, res) => {
+	const candidate = await contractInstance.methods.getCandidateDetails(req.params.addr).call();
+
+	console.log("getCandidate");
+	res.status(200).json({
+		name: candidate.name,
+		wallet: candidate.wallet,
+		district: {
+			id: candidate.district.districtID,
+			name: candidate.district.name,
+		},
+	});
+});
+
 // @route POST /api/candidate/:elecId/:addr
 // @access private
 const addCandidateToElection = asyncHandler(async (req, res) => {
@@ -46,7 +63,8 @@ const addCandidateToElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -77,7 +95,8 @@ const removeCandidateFromElection = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -108,7 +127,8 @@ const removeCandidate = asyncHandler(async (req, res) => {
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
 		console.error("Error estimating gas:", err);
-		exit(1); // Exit the process if there's an error
+		res.status(500).json({ success: 0 });
+		return;
 	});
 
 	// convert gas estimate and set gas limit, gas price
@@ -129,7 +149,7 @@ const removeCandidate = asyncHandler(async (req, res) => {
 module.exports = {
 	addCandidate,
 	addCandidateToElection,
-    removeCandidateFromElection,
+	getCandidate,
+	removeCandidateFromElection,
 	removeCandidate,
 };
-
