@@ -45,14 +45,13 @@ const getElectionDetails = asyncHandler(async (req, res) => {
 
 	console.log(fCall);
 	res.status(200).json({
-		success: 1,
-		// id: Number(fCall.id),
-		// name: fCall.name,
-		// districtIDs: fCall.districtIDs,
-		// candidateAddresses: fCall.candidateAddresses,
-		// electionCommittee: fCall.electionCommittee,
-		// startDate: Number(fCall.startDate),
-		// endDate: Number(fCall.endDate),
+		id: Number(fCall.id),
+		name: fCall.name,
+		districtIDs: fCall.districtIDs,
+		candidateAddresses: fCall.candidateAddresses,
+		electionCommittee: fCall.electionCommittee,
+		startDate: Number(fCall.startDate),
+		endDate: Number(fCall.endDate)
 	});
 });
 
