@@ -2,7 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
 const { errorHandler } = require("./middleware/errorMiddleware");
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
+const IP = process.env.IP || "localhost";
 
 const app = express();
 
@@ -17,4 +18,4 @@ app.use("/api", require("./routes/candidateRoutes"));
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`server started on port ${PORT}`));
+app.listen(PORT, IP, () => console.log(`server started on port http://${IP}:${PORT}`));

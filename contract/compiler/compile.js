@@ -12,6 +12,11 @@ const contractName = "ElectionContract";
 const contractPath = path.join("./src", fileName);
 const sourceCode = fs.readFileSync(contractPath, "utf8");
 
+// Create build path if it doesn't exist
+if (!fs.existsSync("./build")) {
+	fs.mkdirSync("./build");
+}
+
 // solc compiler config
 const input = {
 	language: "Solidity",
