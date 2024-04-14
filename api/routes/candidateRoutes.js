@@ -1,10 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { addCandidate, addCandidateToElection, removeCandidateFromElection, removeCandidate } = require("../controllers/electionController");
+const { 
+    addCandidate,
+    addCandidateToElection,
+    getCandidate,
+    removeCandidateFromElection,
+    removeCandidate
+} = require("../controllers/candidateController");
 
 router.route("/candidate/:name/:districtId/:addr").post(addCandidate);
-router.route("/committeemember/:elecId/:addr").post(addCandidateToElection);
-router.route("/committeemember/:elecId/:addr").delete(removeCandidateFromElection);
+router.route("/candidate/:addr").get(getCandidate);
+router.route("/candidatewithelection/:elecId/:addr").post(addCandidateToElection);
+router.route("/candidatewithelection/:elecId/:addr").delete(removeCandidateFromElection);
 router.route("/candidate/:addr").delete(removeCandidate);
 
 module.exports = router;
