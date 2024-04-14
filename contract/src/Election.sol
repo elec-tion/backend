@@ -422,8 +422,22 @@ contract ElectionContract {
         return voters[_voter];
     }
 
+    // Function to get the total number of elections
     function getElectionsLength() public view returns (uint) {
         return electionCounter;
+    }
+
+    // Function to get the total number of election committee members
+    function getElectionCommitteeMembersLength() public view returns (uint) {
+        return electionCommitteeMemberCounter;
+    }
+
+    // Function to return spesific election committee member's details
+    function getElectionCommitteeMemberDetails(address _wallet) public view returns (ElectionCommittee memory) {
+        // Check if the election committee member already exists
+        require(isElectionComitteMemberExists[_wallet], "Election committee member does not exists");
+
+        return electionCommitteeMembers[_wallet];
     }
 
     // Funtion to return specific election's details
