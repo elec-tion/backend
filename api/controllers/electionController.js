@@ -39,11 +39,10 @@ const createElection = asyncHandler(async (req, res) => {
 // @route GET /api/election/:id
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
-	console.log("getElectionDetails", BigInt(req.params.id), parseInt(req.params.id), Number(req.params.id), chain.utils.toHex(req.params.id), chain.utils.toBigInt(req.params.id));
+	console.log("getElectionDetails");
 
 	const fCall = await contractInstance.methods.getElectionDetails(req.params.id).call();
 
-	console.log(fCall);
 	res.status(200).json({
 		id: Number(fCall.id),
 		name: fCall.name,
