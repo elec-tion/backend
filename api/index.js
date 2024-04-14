@@ -15,6 +15,7 @@ app.use("/api", require("./routes/districtRoutes"));
 app.use("/api", require("./routes/electionRoutes"));
 app.use("/api", require("./routes/committeMembersRoutes"));
 app.use("/api", require("./routes/candidateRoutes"));
+app.use("/api", require("./routes/voterRoutes"));
 
 app.use(errorHandler);
 
