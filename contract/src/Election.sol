@@ -429,7 +429,15 @@ contract ElectionContract {
         // Check if the election exists
         require(isElectionExists[_id], "Election does not exist");
 
-        return (elections[_id]);
+        return elections[_id];
+    }
+
+    // Funtion to return specific candidate's details
+    function getCandidateDetails(address _wallet) public view returns (Candidate memory) {
+        // Check if the candidate already exists
+        require(isCandidateExists[_wallet], "Candidate does not exists");
+
+        return candidates[_wallet];
     }
 
     // Funtion to return specific district's details
