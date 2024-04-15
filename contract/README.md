@@ -20,6 +20,10 @@ Fill in the values for the following variables in the `.env` file:
 ```env
 CHAIN_RPC=http://<IP>:8545
 ADMIN_KEY=<KEY_TO_CREATE_PRIVATE_KEY>
+BUILD_PATH=./build # don't need to change if you follow the default contract build path
+CONTRACT_SOURCE_PATH=./src # don't need to change if you follow the default contract build path
+CONTRACT_FILENAME=Election.sol # don't need to change if you follow the default contract build path
+CONTRACT_NAME=ElectionContract # don't need to change if you follow the default contract build path
 ```
 *`ADMIN_KEY` should be the same with in the contract `.env` file*
 

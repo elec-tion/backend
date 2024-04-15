@@ -1,11 +1,11 @@
 {
 	"name": "contract-utils",
 	"version": "1.0.0",
-	"type": "module",
 	"scripts": {
-		"compile": "node compiler/compile.js",
-		"deploy": "node deployer/deploy.js",
-		"start": "node compiler/compile.js && node deployer/deploy.js"
+		"compile": "node ./index.js compile",
+		"deploy": "node ./index.js deploy",
+		"all": "node ./index.js test",
+		"help": "node ./index.js help"
 	},
 	"dependencies": {
 		"dotenv": "^16.4.5",
