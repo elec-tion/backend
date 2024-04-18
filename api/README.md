@@ -22,8 +22,8 @@ IP=<LOCAL_IP>
 PORT=<PORT_NUMBER>
 CHAIN_RPC=http://<IP>:8545
 ADMIN_KEY=<KEY_TO_CREATE_PRIVATE_KEY>
-CONTRACT_ABI_LOCATION=../contract/build/ElectionContract.abi # don't need to change if you follow the default contract build path
-CONTRACT_ADDRESS_LOCATION=../contract/build/ElectionContract.address # don't need to change if you follow the default contract build path
+CONTRACT_ABI_PATH=../contract/build/ElectionContract.abi # don't need to change if you follow the default contract build path
+CONTRACT_ADDRESS_PATH=../contract/build/ElectionContract.address # don't need to change if you follow the default contract build path
 ```
 *`ADMIN_KEY` should be the same with in the contract `.env` file*
 

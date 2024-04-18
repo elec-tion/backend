@@ -1,6 +1,5 @@
-const { chain, adminAccount, contractInstance } = require("../config/chain.js");
+const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
-contractInstance.handleRevert = true;
 
 // @route POST /api/district/:id/:name
 // @access private

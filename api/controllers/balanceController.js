@@ -1,4 +1,4 @@
-const { chain } = require("../config/chain.js");
+const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
 
 // @route GET /api/balance/:wallet_id

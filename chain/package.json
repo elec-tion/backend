@@ -1,0 +1,20 @@
+{
+	"name": "chain-connection",
+	"version": "1.0.0",
+	"description": "chain connection",
+	"type": "module",
+	"scripts": {
+		"test": "powershell .\\node_modules\\.bin\\_mocha.ps1 .\\test\\index.js"
+	},
+	"author": "B, M",
+	"license": "MIT",
+	"dependencies": {
+		"@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
+		"chai": "^4.2.0",
+		"dotenv": "^16.4.5",
+		"web3": "^4.8.0"
+	},
+	"devDependencies": {
+		"mocha": "^10.4.0"
+	}
+}
