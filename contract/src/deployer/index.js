@@ -1,8 +1,10 @@
-const { Web3 } = require("web3");
-const fs = require("fs");
-const path = require("path");
-const crypto = require("crypto");
-const dotenv = require("dotenv");
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+import { Web3 } from 'web3';
+
+
 dotenv.config();
 
 const web3 = new Web3(process.env.CHAIN_RPC); // Specify your Quorum node's RPC endpoint
@@ -13,9 +15,9 @@ const web3 = new Web3(process.env.CHAIN_RPC); // Specify your Quorum node's RPC 
  * @param {string} contractName - The name of the contract to deploy.
  * @param {string} buildPath - The path where the contract is built.
  */
-async function deployContract(contractName, buildPath) {
+const deployContract = async (contractName, buildPath) => {
 	// Read the bytecode from the file system
-	const bytecodePath = path.join(buildPath, contractName+".bytecode");
+	const bytecodePath = path.join(buildPath, contractName + ".bytecode");
 	const contractBytecode = fs.readFileSync(bytecodePath, "utf8");
 
 	// Set the constructor parameters
@@ -23,7 +25,7 @@ async function deployContract(contractName, buildPath) {
 
 	// Get the admin account
 	const adminAccount = web3.eth.accounts.privateKeyToAccount("0x" + crypto.createHash("sha256").update(process.env.ADMIN_KEY).digest("hex"));
-	
+
 	// Get the transaction count for the admin account
 	const txnCount = await web3.eth.getTransactionCount(adminAccount.address);
 
@@ -54,26 +56,24 @@ async function deployContract(contractName, buildPath) {
 	const txr = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
 
 	// Save the contract address to a file
-	const addressPath = path.join(buildPath, contractName+".address");
+	const addressPath = path.join(buildPath, contractName + ".address");
 	fs.writeFileSync(addressPath, txr.contractAddress, "utf-8");
 
 	// Print the transaction receipt
-	console.log("tx : " + JSON.stringify({
-			blockHash: txr.blockHash,
-			blockNumber: web3.utils.numberToHex(txr.blockNumber),
-			contractAddress: txr.contractAddress,
-			cumulativeGasUsed: web3.utils.numberToHex(txr.cumulativeGasUsed),
-			from: txr.from,
-			gasUsed: web3.utils.numberToHex(txr.gasUsed),
-			logs: txr.logs,
-			status: web3.utils.numberToHex(txr.status),
-			to: txr.to,
-			transactionHash: txr.transactionHash,
-			transactionIndex: web3.utils.numberToHex(txr.transactionIndex),
-			type: web3.utils.numberToHex(txr.type),
-		}, null, 4));
+	return {
+		blockHash: txr.blockHash,
+		blockNumber: web3.utils.numberToHex(txr.blockNumber),
+		contractAddress: txr.contractAddress,
+		cumulativeGasUsed: web3.utils.numberToHex(txr.cumulativeGasUsed),
+		from: txr.from,
+		gasUsed: web3.utils.numberToHex(txr.gasUsed),
+		logs: txr.logs,
+		status: web3.utils.numberToHex(txr.status),
+		to: txr.to,
+		transactionHash: txr.transactionHash,
+		transactionIndex: web3.utils.numberToHex(txr.transactionIndex),
+		type: web3.utils.numberToHex(txr.type),
+	};
 };
 
-module.exports = {
-    deployContract
-};
+export default deployContract;
