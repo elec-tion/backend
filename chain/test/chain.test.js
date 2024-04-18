@@ -2,7 +2,6 @@ import chai from 'chai';
 const { expect } = chai;
 import fs from 'fs';
 import { chain, contractInstance, adminAccount } from '../index.js';
-import("@nomicfoundation/hardhat-chai-matchers");
 
 describe('Web3 Connection', function() {
     it('should connect to the blockchain', async function() {
