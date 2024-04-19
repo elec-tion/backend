@@ -41,7 +41,7 @@ contract ElectionContract {
     Admin public admin; 
 
     uint public electionCommitteeMemberCounter; // counter to keep track of the number of election committee members
-    mapping(address => ElectionCommittee) electionCommitteeMembers; // election committee member details with that specified member address
+    mapping(address => ElectionCommittee) public electionCommitteeMembers; // election committee member details with that specified member address
     mapping(address => bool) public isElectionComitteMemberExists; // to check if election committee member exists with that specified member address
 
     uint public electionCounter; // counter to keep track of the number of elections
@@ -54,7 +54,7 @@ contract ElectionContract {
     mapping(address => Candidate) public candidates; // candidate id to candidate details
     mapping(address => bool) public isCandidateExists; // to check if candidate exists with that specified candidate address
 
-    mapping(address => Voter) voters; // voter details with that specified voter address
+    mapping(address => Voter) public voters; // voter details with that specified voter address
     mapping(address => bool) public isVoterExists; // to check if voter exists with that specified voter address
 
 
@@ -86,7 +86,8 @@ contract ElectionContract {
         require(!isElectionComitteMemberExists[_member], "Member already registered");
 
         isElectionComitteMemberExists[_member] = true;
-        electionCommitteeMembers[_member] = ElectionCommittee(++electionCommitteeMemberCounter, _name, _member);
+        electionCommitteeMembers[_member] = ElectionCommittee(electionCommitteeMemberCounter, _name, _member);
+        electionCommitteeMemberCounter = electionCommitteeMemberCounter + 1;
     }
 
     // Function to remove an election committee member
@@ -328,16 +329,6 @@ contract ElectionContract {
         voters[msg.sender] = Voter(District("null", "null"), emptyElectionIds);
     }
 
-    // Function to remove a voter
-    // check if the voter exists then delete from the mapping
-    function removeVoter(address _voter) public onlyAdmin {
-        // check if the voter exists. If yes, delete the voter
-        require(isVoterExists[_voter], "Voter does not exist");
-
-        delete voters[_voter];
-        delete isVoterExists[_voter];
-    }
-
     function addVoterToElection(address _voter, uint _electionId)  public onlyAdmin () {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
@@ -382,6 +373,17 @@ contract ElectionContract {
         voters[_voter].electionIDs = newElectionIDs;
     }
 
+
+    // Function to remove a voter
+    // check if the voter exists then delete from the mapping
+    function removeVoter(address _voter) public onlyAdmin {
+        // check if the voter exists. If yes, delete the voter
+        require(isVoterExists[_voter], "Voter does not exist");
+
+        delete voters[_voter];
+        delete isVoterExists[_voter];
+    }
+    
     // Function to add a district to a voter -for admin-   
     function addDistrictToVoter(address _voter, string memory _districtId) public onlyAdmin {
         // check if the voter exists. 
@@ -394,7 +396,7 @@ contract ElectionContract {
     }
 
     // Function to remove a district from voter -for admin-    
-    function addDistrictFromVoter(address _voter, string memory _districtId) public onlyAdmin {
+    function removeDistrictFromVoter(address _voter, string memory _districtId) public onlyAdmin {
         // check if the voter exists. 
         require(isVoterExists[_voter], "Voter does not exist");
         // Check if the district exists
@@ -443,7 +445,7 @@ contract ElectionContract {
     // Funtion to return specific election's details
     function getElectionDetails(uint _id) public view returns (Election memory) {
         // Check if the election exists
-        require(isElectionExists[_id], "Election does not exist");
+        require(isElectionExists[_id], "Election does not exists");
 
         return elections[_id];
     }
@@ -464,34 +466,4 @@ contract ElectionContract {
         return districts[_id];
     }
 
-    // function allows a voter to cast their vote in a specific election for a particular candidate
-    // function vote(uint _electionId, uint _candidateIndex) public {
-    //     require(_electionId < elections.length, "Invalid election ID");
-    //     require(
-    //         _candidateIndex < elections[_electionId].candidateIndices.length,
-    //         "Invalid candidate index"
-    //     );
-    //     require(address(voters[msg.sender].wallet).balance != 0, "You already voted");
-    //     require(address(voters[msg.sender].wallet).balance > 1, "You already voted");
-    //     // Additional checks for ensuring voter eligibility, preventing multiple votes, etc.
-
-    //     voters[msg.sender].election_ids.push(_electionId);  // msg.sender represents the address of the account that called the current function
-    //     // Record the vote
-    // }
-
-    // function getElectionResults(uint _electionId) public view returns (uint[] memory) {
-    //     require(_electionId < elections.length, "Invalid election ID");
-
-    //     uint[] memory results;
-    //     uint[] memory candidateIndices = elections[_electionId].candidateIndices;
-
-    //     for (uint i = 0; i < candidateIndices.length; i++) {
-    //         uint candidateIndex = candidateIndices[i];
-    //         // Here, you can retrieve specific information about candidates, such as votes received
-    //         // For simplicity, let's just store the candidate index in the results array
-    //         results[i] = candidateIndex;
-    //     }
-
-    //     return results;
-    // }
 }
