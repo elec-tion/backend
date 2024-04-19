@@ -10,6 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/api", (req, res) => {
+    res.status(200).json({"message": "API is running"});
+});
+
 app.use("/api", require("./routes/balanceRoutes"));
 app.use("/api", require("./routes/districtRoutes"));
 app.use("/api", require("./routes/electionRoutes"));

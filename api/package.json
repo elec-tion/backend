@@ -5,12 +5,14 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js",
-		"server": "nodemon index.js"
+		"server": "nodemon index.js",
+		"test": "npx mocha test"
 	},
 	"author": "B, M",
 	"license": "MIT",
 	"dependencies": {
 		"@nomicfoundation/hardhat-toolbox": "^5.0.0",
+		"chai-http": "^4.4.0",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.1",
 		"express-async-handler": "^1.2.0",
