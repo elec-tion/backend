@@ -1,7 +1,5 @@
 // npx hardhat run scripts/deploy.js --network localhost
 
-
-
 // test/electionContract.test.js
 
 const { expect } = require("chai");
@@ -10,28 +8,28 @@ describe("ElectionContract", function () {
 	let ElectionContract;
 	let electionContract;
 	let admin;
-	let commitee;
+	let committee;
 	let voter1;
 	let voter2;
 
 	beforeEach(async function () {
-		[admin, commitee, candidate, voter1] = await ethers.getSigners();
+		[admin, committee, candidate, voter1] = await ethers.getSigners();
 		ElectionContract = await ethers.getContractFactory("ElectionContract"); // returns a factory object that can be used to deploy the contract
 		hardhatToken = await ethers.deployContract("ElectionContract");
 	});
 
-	// add/remove election commitee
+	// add/remove election committee
 	it("Should set admin correctly", async function () {
 		let addr = await hardhatToken.connect(admin).admin();
 		expect(addr).to.equal(admin.address);
 	});
 
 	it("Should add and remove election committee members", async function () {
-		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address, "Test Committee Member");
-		expect(await hardhatToken.connect(commitee).isElectionComitteMemberExists(commitee.address)).to.equal(true);
+		await hardhatToken.connect(admin).addElectionCommitteeMember(committee.address, "Test Committee Member");
+		expect(await hardhatToken.connect(committee).isElectionComitteMemberExists(committee.address)).to.equal(true);
 
-		await hardhatToken.connect(admin).removeElectionCommitteeMember(commitee.address);
-		expect(await hardhatToken.connect(commitee).isElectionComitteMemberExists(commitee.address)).to.equal(false);
+		await hardhatToken.connect(admin).removeElectionCommitteeMember(committee.address);
+		expect(await hardhatToken.connect(committee).isElectionComitteMemberExists(committee.address)).to.equal(false);
 	});
 
 	// create election by admin
@@ -55,28 +53,28 @@ describe("ElectionContract", function () {
 	it("Should add a committe member to an election", async function () {
 		// creating election then adding a commite member
 		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800);
-		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address, "Test Committee Member");
+		await hardhatToken.connect(admin).addElectionCommitteeMember(committee.address, "Test Committee Member");
 
 		// adding the committe member to the election
-		await hardhatToken.connect(admin).addElectionCommitteeMemberToElection(commitee.address, 0);
+		await hardhatToken.connect(admin).addElectionCommitteeMemberToElection(committee.address, 0);
 
 		// check if the member added to the election
 		let electionContent = await hardhatToken.connect(admin).getElectionDetails(0);
 		let committeeMember = await electionContent.electionCommittee[0];
-		expect(committeeMember).to.equal(commitee.address);
+		expect(committeeMember).to.equal(committee.address);
 	});
 
 	// remove committe member from election (by admin)
 	it("Should remove a committe member from an election", async function () {
 		// creating election then adding a commite member
 		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800);
-		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address, "Test Committee Member");
+		await hardhatToken.connect(admin).addElectionCommitteeMember(committee.address, "Test Committee Member");
 
 		// adding the committe member to the election
-		await hardhatToken.connect(admin).addElectionCommitteeMemberToElection(commitee.address, 0);
+		await hardhatToken.connect(admin).addElectionCommitteeMemberToElection(committee.address, 0);
 
 		// removing the committe member to the election
-		await hardhatToken.connect(admin).removeElectionCommitteeMemberFromElection(commitee.address, 0);
+		await hardhatToken.connect(admin).removeElectionCommitteeMemberFromElection(committee.address, 0);
 
 		// check if the member removed to the election
 		let electionContent = await hardhatToken.connect(admin).getElectionDetails(0);
@@ -102,7 +100,6 @@ describe("ElectionContract", function () {
 		// add a district
 		await hardhatToken.connect(admin).addDistrict("Test District", "01");
 		const district = await hardhatToken.connect(admin).districts("01");
-		console.log(district);
 		expect(district.name).to.equal("Test District");
 		expect(district.districtID).to.equal("01");
 		expect(await hardhatToken.connect(admin).isDistrictExists("01")).to.equal(true);
@@ -282,9 +279,11 @@ describe("ElectionContract", function () {
 		await hardhatToken.connect(admin).removeVoterFromElection(0, voter1.address);
 
 		// get voter's elections and check if the election is removed
-		let voterElections = await hardhatToken.connect(voter1).getVotersElections();
+		// by calling getVotersElections() and it should reverted with reason string
+		// because voter don't have any election to participate
+		let voterElections = await hardhatToken.connect(voter1);
 
-		expect(voterElections.length).to.equal(0);
+		expect(voterElections.getVotersElections()).to.be.revertedWith("Voter can't enter any election");
 	});
 
 	// remove voter (by admin)
@@ -298,73 +297,127 @@ describe("ElectionContract", function () {
 		expect(isExist).to.equal(false);
 	});
 
-// 	// update voter's elections (by admin)
-// 	it("Should update voters elections", async function () {
-// 		await hardhatToken.connect(admin).admin();
+	// add district to voter (by admin)
+	it("Should add a district to voter", async function () {
+		// add a voter
+		await hardhatToken.connect(voter1).addVoter();
 
-// 		// admin creates election and updates voter1's elections
-// 		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800);
-// 		await hardhatToken.connect(voter1).addVoter();
-// 		await hardhatToken.connect(admin).updateVotersElections(0, voter1.address);
-// 		const voter = await hardhatToken.connect(admin).getVoters(voter1.address);
-// 		// voter1's girst election's id should be 0
-// 		expect(voter.election_ids[0]).to.equal(0);
-// 	});
+		// add a district
+		await hardhatToken.connect(admin).addDistrict("Test District", "01");
 
-// 	// get voter's elections
-// 	// should assign some elections to a voter and check if the elections has been assigned
-// 	it("Should get voters elections", async function () {
-// 		await hardhatToken.connect(admin).admin();
+		// add district to voter
+		await hardhatToken.connect(admin).addDistrictToVoter(voter1.address, "01");
 
-// 		await hardhatToken.connect(voter1).addVoter();
-// 		await hardhatToken.connect(admin).createElection("Test Election 1", 1648886400, 1648972800);
-// 		await hardhatToken.connect(admin).createElection("Test Election 2", 1648886400, 1648972800);
-// 		await hardhatToken.connect(admin).updateVotersElections(0, voter1.address);
-// 		await hardhatToken.connect(admin).updateVotersElections(1, voter1.address);
-// 		const elections = await hardhatToken.connect(voter1).getVotersElections();
-// 		expect(elections[1]).to.equal(1);
-// 	});
+		// check if the district added to the voter
+		let voter = await hardhatToken.connect(admin).getVoter(voter1.address);
+		let voterDistrict = await voter.district;
+		expect(voterDistrict.districtID).to.equal("01");
+	});
 
-// 	// only admin should add/remove commitee members
-// 	it("Should not allow non-admin to add/remove election committee member", async function () {
-// 		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address);
-// 		await expect(hardhatToken.connect(commitee).addElectionCommitteeMember(voter1.address)).to.be.revertedWith("Only admin can call this function");
-// 		await expect(hardhatToken.connect(commitee).removeElectionCommitteeMember(voter2.address)).to.be.revertedWith("Only admin can call this function");
-// 	});
+	// remove district from voter (by admin)
+	it("Should remove a district from voter", async function () {
+		// add a voter
+		await hardhatToken.connect(voter1).addVoter();
 
-// 	// only admin should add district
-// 	it("Should not allow non-admin to add district", async function () {
-// 		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address);
+		// add a district
+		await hardhatToken.connect(admin).addDistrict("Test District", "01");
 
-// 		await expect(hardhatToken.connect(commitee).addDistrict(0, "Test District", "01")).to.be.revertedWith("Only admin can call this function");
-// 	});
+		// add district to voter
+		await hardhatToken.connect(admin).addDistrictToVoter(voter1.address, "01");
 
-// 	// only admin should add candidate
-// 	it("Should not allow non-admin to add candidate", async function () {
-// 		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address);
-// 		await expect(hardhatToken.connect(commitee).addCandidate(0, "Test Candidate", "01", voter1.address)).to.be.revertedWith("Only admin can call this function");
-// 	});
+		// remove district from voter
+		await hardhatToken.connect(admin).removeDistrictFromVoter(voter1.address, "01");
 
-// 	// only admin should remove voters
-// 	it("Should not allow non-admin to remove voter", async function () {
-// 		await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address);
-// 		await expect(hardhatToken.connect(commitee).removeVoter(voter1.address)).to.be.revertedWith("Only admin can call this function");
-// 	});
+		// check if the district removed from the voter
+		// getVoter() -> Voter(struct) -> District(struct) -> districtID(string)
+		let voter = await hardhatToken.connect(admin).getVoter(voter1.address);
+		let voterDistrict = await voter.district;
+		expect(voterDistrict.districtID).to.equal('null');
+	});
 
-// 	it("Should not allow non-election committee member to update voters elections", async function () {
-// 		await hardhatToken.connect(voter1).addVoter();
-// 		await expect(hardhatToken.connect(voter1).updateVotersElections(0, voter1.address)).to.be.revertedWith("Only admin or election committee members can call this function");
-// 	});
 
-// 	it("Should not allow non-election committee member to create election", async function () {
-// 		await hardhatToken.connect(voter1).addVoter();
-// 		await expect(hardhatToken.connect(voter1).createElection("Test Election", 1648886400, 1648972800)).to.be.revertedWith(
-// 			"Only admin or election committee members can call this function"
-// 		);
-// 	});
+	// get voter's elections
+	// should assign some elections to a voter and check if the elections has been assigned
+	it("Should get voters elections", async function () {
+		// add a voter
+		await hardhatToken.connect(voter1).addVoter();
+		
+		// create 2 elections and assign them to the voter
+		await hardhatToken.connect(admin).createElection("Test Election 1", 1648886400, 1648972800);
+		await hardhatToken.connect(admin).createElection("Test Election 2", 1648886400, 1648972800);
+		await hardhatToken.connect(admin).addVoterToElection(voter1.address,0);
+		await hardhatToken.connect(admin).addVoterToElection(voter1.address, 1);
 
-// 	it("Should not allow non-registered voter to get voters elections", async function () {
-// 		await expect(hardhatToken.connect(voter1).getVotersElections()).to.be.revertedWith("User not exist");
-// 	});
+		// check if the elections assigned to the voter
+		const elections = await hardhatToken.connect(voter1).getVotersElections();
+		expect(elections[1]).to.equal(1);
+		expect(elections[0]).to.equal(0);
+	});
+
+	// get voter (by admin)
+	it("Should get voter", async function () {
+		// add a voter
+		await hardhatToken.connect(voter1).addVoter();
+
+		// get voter
+		const voter = await hardhatToken.connect(admin).voters(voter1.address);
+		expect(voter[0]).to.equal('null');
+		expect(voter[1]).to.equal('null');
+	});
+
+	// get Election Committee Members array length
+	it("Should get Election Committee Members array length", async function () {
+		// add a committee member
+		hardhatToken.connect(admin).addElectionCommitteeMember(committee.address);
+
+		// get Election Committee Members array length
+		const length = await hardhatToken.connect(admin).getElectionCommitteeMembersLength();
+		expect(length).to.equal(1);
+	});
+
+	// get Election Committee Member details
+	it("Should get Election Committee Member details", async function () {
+		// add a committee member
+		await hardhatToken.connect(admin).addElectionCommitteeMember(committee.address, "Test Committee Member");
+		
+		// get Election Committee Member details
+		let details = await hardhatToken.connect(admin).getElectionCommitteeMemberDetails(committee.address);
+		expect(details.wallet).to.equal(committee.address);
+	});
+
+	// get election details
+	it("Should get election details", async function () {
+		// create election
+		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800);
+
+		// get election details
+		let electionDetails = await hardhatToken.connect(admin).getElectionDetails(0);
+		expect(electionDetails.name).to.equal("Test Election");
+	});
+
+	// get candidate details
+	it("Should get candidate details", async function () {
+		// add a district
+		await hardhatToken.connect(admin).addDistrict("Test District", "01");
+
+		// add a candidate
+		await hardhatToken.connect(admin).addCandidate("Test Candidate", "01", candidate.address);
+
+		// get candidate details
+		let candidateDetails = await hardhatToken.connect(admin).getCandidateDetails(candidate.address);
+		expect(candidateDetails.name).to.equal("Test Candidate");
+	});
+
+	// get district details
+	it("Should get district details", async function () {
+		// add a district
+		await hardhatToken.connect(admin).addDistrict("Test District", "01");
+
+		// get district details
+		let districtDetails = await hardhatToken.connect(admin).getDistrictDetails("01");
+		expect(districtDetails.districtID).to.equal("01");
+	});
+
+
  });
 
