@@ -1,23 +1,19 @@
 {
 	"name": "contract-utils",
 	"version": "1.0.0",
-	"main": "index.js",
 	"scripts": {
 		"compile": "node ./index.js compile",
 		"deploy": "node ./index.js deploy",
-		"execute": "node ./index.js execute",
-		"test": "powershell .\\node_modules\\.bin\\_mocha.ps1 .\\test\\ElectionContract.test.js",
+		"all": "node ./index.js test",
 		"help": "node ./index.js help"
 	},
 	"dependencies": {
-		"chai": "4.2.0",
 		"dotenv": "^16.4.5",
 		"web3": "^4.6.0",
 		"web3-eth": "^4.5.0",
 		"web3-quorum": "^0.1.1"
 	},
 	"devDependencies": {
-		"solc": "0.8.19",
-		"mocha": "^10.4.0"
+		"solc": "0.8.19"
 	}
 }

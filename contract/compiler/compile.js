@@ -58,13 +58,10 @@ async function compileContract(contractSourcePath, contractfileName, contractNam
 	const abiPath = path.join(buildPath, contractName + ".abi");
 	fs.writeFileSync(abiPath, JSON.stringify(abi, null, 4), "utf-8");
 
-	// Return the ABI and bytecode file paths
-	return {
-		abiPath: abiPath,
-		bytecodePath: bytecodePath,
-	};
+	// Log the Contract ABI to the console
+	console.log("Contract ABI in:", abiPath);
 }
 
 module.exports = {
-	compileContract,
+    compileContract
 };
