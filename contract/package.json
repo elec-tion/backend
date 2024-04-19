@@ -1,7 +1,7 @@
 {
 	"name": "contract-utils",
 	"version": "1.0.0",
-	"type": "module",
+	"main": "index.js",
 	"scripts": {
 		"compile": "node ./index.js compile",
 		"deploy": "node ./index.js deploy",

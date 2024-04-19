@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import { Web3 } from 'web3';
-import crypto from 'crypto';
-import dotenv from 'dotenv';
+const fs = require("fs");
+const path = require("path");
+const { Web3 } = require("web3");
+const crypto = require("crypto");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const web3 = new Web3(process.env.CHAIN_RPC); // Specify your Quorum node's RPC endpoint
@@ -14,7 +14,7 @@ const web3 = new Web3(process.env.CHAIN_RPC); // Specify your Quorum node's RPC 
  * @param {string} buildPath - The path where the contract is built.
  * @returns {Promise<object>} - The transaction receipt of the deployment.
  */
-const deployContract = async (contractName, buildPath) => {
+async function deployContract(contractName, buildPath) {
 	// Read the bytecode from the file system
 	const bytecodePath = path.join(buildPath, contractName + ".bytecode");
 	const contractBytecode = fs.readFileSync(bytecodePath, "utf8");
@@ -73,6 +73,8 @@ const deployContract = async (contractName, buildPath) => {
 		transactionIndex: web3.utils.numberToHex(txr.transactionIndex),
 		type: web3.utils.numberToHex(txr.type),
 	};
-};
+}
 
-export default deployContract;
+module.exports = {
+	deployContract,
+};
