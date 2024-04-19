@@ -6,7 +6,7 @@
 		"compile": "node ./index.js compile",
 		"deploy": "node ./index.js deploy",
 		"execute": "node ./index.js execute",
-		"test": "powershell .\\node_modules\\.bin\\_mocha.ps1 .\\test\\ElectionContract.test.js",
+		"test": "npx mocha test",
 		"help": "node ./index.js help"
 	},
 	"dependencies": {

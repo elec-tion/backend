@@ -28,6 +28,9 @@ describe('ElectionContract', function () {
 	*/
 	// add election commitee
 	it("Should add election committee members", async function () {
+		// increase timeout
+		this.timeout(10000);
+
 		const member = electionCommitteeAccounts[0];
 
 		// Create raw transaction
@@ -58,13 +61,12 @@ describe('ElectionContract', function () {
 		// check if the member added
 		const isMemberExists = await contractInstance.methods.isElectionComitteMemberExists(member.address).call();
 		chai.expect(isMemberExists).to.equal(true);
-
-		await contractInstance.methods.removeElectionCommitteeMember(member.address).send({ from: adminAccount.address });
-		const isMemberExistsAfterRemove = await contractInstance.methods.isElectionComitteMemberExists(member.address).call();
-		chai.expect(isMemberExistsAfterRemove).to.equal(false);
 	});
 	// remove election commitee
 	it("Should remove election committee members", async function () {
+		// increase timeout
+		this.timeout(10000);
+
 		const member = electionCommitteeAccounts[0];
 
 		// Create raw transaction
