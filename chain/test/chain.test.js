@@ -16,7 +16,7 @@ describe('Web3 Connection', function() {
 });
 
 describe('Contract Instance', function() {
-    it('should be same Contract admin and the account used to deploy the contract', async function() {
+    it('should be that the address deploying the contract matches the address of the contract admin', async function() {
         const contractAdmin = await contractInstance.methods.admin().call();
         chai.expect(contractAdmin).to.equal(adminAccount.address);
     });
