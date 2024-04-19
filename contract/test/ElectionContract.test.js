@@ -1,13 +1,13 @@
-const { chain, adminAccount, contractInstance } = require("../..chain");
+const { chain, adminAccount, contractInstance } = require("../../chain");
 const { voterAccounts, candidateAccounts, electionCommitteeAccounts } = require("./accounts.js");
-const dotenv = require("dotenv");
 const fs = require("fs");
-import chai from 'chai';
-const { expect } = chai;
+const path = require("path");
+const chai = require('chai');
+const dotenv = require("dotenv");
 dotenv.config();
 
 // Check contract deployed via ElectionContract.address file
-if (!fs.existsSync(fs.join(process.env.BUILD_PATH, process.env.CONTRACT_NAME + ".address"))) {
+if (!fs.existsSync(path.join(process.env.BUILD_PATH, process.env.CONTRACT_NAME + ".address"))) {
 	console.error("Contract not deployed");
 	process.exit(1);
 }
@@ -17,7 +17,7 @@ describe('ElectionContract', function () {
 	// add/remove election commitee
 	it("Should set admin correctly", async function () {
 		const contractAdmin = await contractInstance.methods.admin().call();
-		expect(contractAdmin).to.equal(adminAccount.address);
+		chai.expect(contractAdmin).to.equal(adminAccount.address);
 	});
 	/*
 		// add/remove election commitee
@@ -26,7 +26,78 @@ describe('ElectionContract', function () {
 			expect(addr).to.equal(admin.address);
 		});
 	*/
+	// add election commitee
+	it("Should add election committee members", async function () {
+		const member = electionCommitteeAccounts[0];
+
+		// Create raw transaction
+		let rawTx = {
+			from: adminAccount.address,
+			to: contractInstance.options.address,
+			data: contractInstance.methods.addElectionCommitteeMember(member.address, "Test Election Committee Member #0").encodeABI(),
+		};
+
+		// estimate gas
+		const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+			console.error("Error estimating gas:", err);
+			return;
+		});
+	
+		// convert gas estimate and set gas limit, gas price
+		const _gasLimit = chain.utils.numberToHex(gasEstimate);
+		rawTx.gasLimit = _gasLimit;
+		rawTx.gasPrice = "0x0";
+	
+		// sign transaction
+		const signedTx = await adminAccount.signTransaction(rawTx);
+
+		// send transaction
+		const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+		chai.expect(Number(txr.status)).to.equal(1);
+
+		// check if the member added
+		const isMemberExists = await contractInstance.methods.isElectionComitteMemberExists(member.address).call();
+		chai.expect(isMemberExists).to.equal(true);
+
+		await contractInstance.methods.removeElectionCommitteeMember(member.address).send({ from: adminAccount.address });
+		const isMemberExistsAfterRemove = await contractInstance.methods.isElectionComitteMemberExists(member.address).call();
+		chai.expect(isMemberExistsAfterRemove).to.equal(false);
+	});
+	// remove election commitee
+	it("Should remove election committee members", async function () {
+		const member = electionCommitteeAccounts[0];
+
+		// Create raw transaction
+		let rawTx = {
+			from: adminAccount.address,
+			to: contractInstance.options.address,
+			data: contractInstance.methods.removeElectionCommitteeMember(member.address).encodeABI(),
+		};
+
+		// estimate gas
+		const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+			console.error("Error estimating gas:", err);
+			return;
+		});
+	
+		// convert gas estimate and set gas limit, gas price
+		const _gasLimit = chain.utils.numberToHex(gasEstimate);
+		rawTx.gasLimit = _gasLimit;
+		rawTx.gasPrice = "0x0";
+	
+		// sign transaction
+		const signedTx = await adminAccount.signTransaction(rawTx);
+
+		// send transaction
+		const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+		chai.expect(Number(txr.status)).to.equal(1);
+
+		// check if the member added
+		const isMemberExistsAfterRemove = await contractInstance.methods.isElectionComitteMemberExists(member.address).call();
+		chai.expect(isMemberExistsAfterRemove).to.equal(false);
+	});
 	/*
+		// add/remove election commitee
 		it("Should add and remove election committee members", async function () {
 			await hardhatToken.connect(admin).addElectionCommitteeMember(commitee.address, "Test Committee Member");
 			expect(await hardhatToken.connect(commitee).isElectionComitteMemberExists(commitee.address)).to.equal(true);
@@ -374,12 +445,14 @@ describe('ElectionContract', function () {
 		});
 	*/
 	/*
+		// only admin should update voters elections
 		it("Should not allow non-election committee member to update voters elections", async function () {
 			await hardhatToken.connect(voter1).addVoter();
 			await expect(hardhatToken.connect(voter1).updateVotersElections(0, voter1.address)).to.be.revertedWith("Only admin or election committee members can call this function");
 		});
 	*/
 	/*
+		// only admin should create election
 		it("Should not allow non-election committee member to create election", async function () {
 			await hardhatToken.connect(voter1).addVoter();
 			await expect(hardhatToken.connect(voter1).createElection("Test Election", 1648886400, 1648972800)).to.be.revertedWith(
@@ -388,6 +461,7 @@ describe('ElectionContract', function () {
 		});
 	*/
 	/*
+		// only admin should add/remove election committee member
 		it("Should not allow non-registered voter to get voters elections", async function () {
 			await expect(hardhatToken.connect(voter1).getVotersElections()).to.be.revertedWith("User not exist");
 		});

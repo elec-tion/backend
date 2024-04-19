@@ -147,7 +147,7 @@ const getElectionCommitteeMemberDetails = asyncHandler(async (req, res) => {
 		name: fCall.name,
 		wallet: fCall.wallet,
 	});
-})
+});
 
 module.exports = {
 	addElectionCommitteeMember,

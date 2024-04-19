@@ -4,7 +4,7 @@
 	"description": "chain connection",
 	"main": "index.js",
 	"scripts": {
-		"test": "powershell .\\node_modules\\.bin\\_mocha.ps1 .\\test\\chain.test.js"
+		"test": "npx mocha test"
 	},
 	"author": "B, M",
 	"license": "MIT",

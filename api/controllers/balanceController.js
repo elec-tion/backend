@@ -17,6 +17,11 @@ const updateBalance = asyncHandler(async (req, res) => {
 		.then((balance) => {
 			console.log(`Wallet ${wallet_id} exists on the node.`);
 			console.log(`Balance: ${chain.utils.fromWei(balance, "ether")} ETH`);
+			// Check if the balance is greater than 1
+			if (chain.utils.fromWei(balance, "ether") >= 1) {
+				console.log("Balance is greater than 1 ETH");
+				res.status(401).json({ message: "Balance is greater than 1 ETH" });
+			}
 		})
 		.catch((error) => {
 			console.error(`Error checking wallet existence: ${error}`);

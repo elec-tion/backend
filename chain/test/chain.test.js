@@ -20,6 +20,7 @@ describe('Contract Instance', function() {
         const contractAdmin = await contractInstance.methods.admin().call();
         chai.expect(contractAdmin).to.equal(adminAccount.address);
     });
+
     it('should throw an error if ABI location is not defined', function() {
         delete process.env.CONTRACT_ABI_PATH;
 

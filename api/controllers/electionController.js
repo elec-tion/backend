@@ -49,7 +49,7 @@ const getElectionDetails = asyncHandler(async (req, res) => {
 		candidateAddresses: fCall.candidateAddresses,
 		electionCommittee: fCall.electionCommittee,
 		startDate: Number(fCall.startDate),
-		endDate: Number(fCall.endDate)
+		endDate: Number(fCall.endDate),
 	});
 });
 

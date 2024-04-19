@@ -163,8 +163,8 @@ const removeVoter = asyncHandler(async (req, res) => {
 
 module.exports = {
 	addVoterToElection,
-    addDistrictToVoter,
+	addDistrictToVoter,
 	removeDistrictFromVoter,
-    removeVoterFromElection,
-    removeVoter,
+	removeVoterFromElection,
+	removeVoter,
 };
