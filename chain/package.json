@@ -2,7 +2,7 @@
 	"name": "chain-connection",
 	"version": "1.0.0",
 	"description": "chain connection",
-	"type": "module",
+	"main": "index.js",
 	"scripts": {
 		"test": "powershell .\\node_modules\\.bin\\_mocha.ps1 .\\test\\chain.test.js"
 	},

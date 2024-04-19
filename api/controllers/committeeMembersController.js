@@ -1,4 +1,4 @@
-const { chain, adminAccount, contractInstance } = import('../../chain/index.js');
+const { chain, adminAccount, contractInstance } = require('../../chain/index.js');
 const asyncHandler = require("express-async-handler");
 
 // @route POST /api/committeemember/:adddr/:name

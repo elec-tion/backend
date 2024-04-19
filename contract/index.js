@@ -11,8 +11,12 @@ const command = args[0];
 if (command === "compile") {
     console.log("Compiling contract...");
     compileContract(process.env.CONTRACT_SOURCE_PATH, process.env.CONTRACT_FILENAME, process.env.CONTRACT_NAME, process.env.BUILD_PATH)
-    .then(() => {
-        console.log("Compilation successful!"); // Log success message
+    .then((paths) => {
+        // Log success message
+        console.log("Compilation successful!");
+        // Log path to the compiled contract files
+        console.log("ABI Path:", paths.abiPath);
+        console.log("Bytecode Path:", paths.bytecodePath);
     })
     .catch((error) => {
         console.error("Compilation failed:", error); // Log error message if compilation fails
@@ -27,28 +31,10 @@ if (command === "compile") {
 	.catch((error) => {
 		console.error("Error deploying contract:", error);
 	});
-} else if (command === "execute") {
-    console.log("Compiling and deploying contract...");
-    compileContract(process.env.CONTRACT_SOURCE_PATH, process.env.CONTRACT_FILENAME, process.env.CONTRACT_NAME, process.env.BUILD_PATH)
-    .then(() => {
-        console.log("Compilation successful!"); // Log success message
-    })
-    .catch((error) => {
-        console.error("Compilation failed:", error); // Log error message if compilation fails
-    });
-
-    deployContract(process.env.CONTRACT_NAME, process.env.BUILD_PATH)
-	.then((receipt) => {
-		console.log("Transaction Receipt:", receipt);
-	})
-	.catch((error) => {
-		console.error("Error deploying contract:", error);
-	});
 } else if (command === "help") {
     console.log("Usage: node index.js [command]");
     console.log("Commands:");
     console.log("   compile: Compile contract");
     console.log("   deploy: Deploy contract");
-    console.log("   build: Compile and deploy contract");
     console.log("   help: Display this help message");
 }
