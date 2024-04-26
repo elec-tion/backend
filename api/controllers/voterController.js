@@ -12,11 +12,12 @@ const addVoterToElection = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
-		res.status(500).json({ success: 0 });
-		return;
-	});
+	const gasEstimate = await chain.eth
+		.estimateGas(rawTx)
+		.catch((err) => {
+			console.error("Error estimating gas:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -24,13 +25,23 @@ const addVoterToElection = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount.signTransaction(rawTx);
+	const signedTx = await adminAccount
+		.signTransaction(rawTx)
+		.catch((err) => {
+			console.error("Error signing transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// send transaction
-	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+	const txr = await chain.eth
+		.sendSignedTransaction(signedTx.rawTransaction)
+		.catch((err) => {
+			console.error("Error sending transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	console.log("addVoterToElection", txr);
-	res.status(200).json({ success: 1 });
+	res.status(200).json({ success: 1, txr: txr });
 });
 
 // @route POST /api/voterwithdistrict/:addr/:districtId
@@ -44,11 +55,12 @@ const addDistrictToVoter = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
-		res.status(500).json({ success: 0 });
-		return;
-	});
+	const gasEstimate = await chain.eth
+		.estimateGas(rawTx)
+		.catch((err) => {
+			console.error("Error estimating gas:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -56,13 +68,23 @@ const addDistrictToVoter = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount.signTransaction(rawTx);
+	const signedTx = await adminAccount
+		.signTransaction(rawTx)
+		.catch((err) => {
+			console.error("Error signing transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// send transaction
-	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+	const txr = await chain.eth
+		.sendSignedTransaction(signedTx.rawTransaction)
+		.catch((err) => {
+			console.error("Error sending transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	console.log("addDistrictToVoter", txr);
-	res.status(200).json({ success: 1 });
+	res.status(200).json({ success: 1, txr: txr });
 });
 
 // @route DELETE /api/voterwithdistrict/:addr/:districtId
@@ -76,11 +98,12 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
-		res.status(500).json({ success: 0 });
-		return;
-	});
+	const gasEstimate = await chain.eth
+		.estimateGas(rawTx)
+		.catch((err) => {
+			console.error("Error estimating gas:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -88,13 +111,23 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount.signTransaction(rawTx);
+	const signedTx = await adminAccount
+		.signTransaction(rawTx)
+		.catch((err) => {
+			console.error("Error signing transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// send transaction
-	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+	const txr = await chain.eth
+		.sendSignedTransaction(signedTx.rawTransaction)
+		.catch((err) => {
+			console.error("Error sending transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	console.log("removeDistrictFromVoter", txr);
-	res.status(200).json({ success: 1 });
+	res.status(200).json({ success: 1, txr: txr });
 });
 
 // @route DELETE /api/voterwithelection/:elecId/:addr
@@ -108,11 +141,12 @@ const removeVoterFromElection = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
-		res.status(500).json({ success: 0 });
-		return;
-	});
+	const gasEstimate = await chain.eth
+		.estimateGas(rawTx)
+		.catch((err) => {
+			console.error("Error estimating gas:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -120,13 +154,23 @@ const removeVoterFromElection = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount.signTransaction(rawTx);
+	const signedTx = await adminAccount
+		.signTransaction(rawTx)
+		.catch((err) => {
+			console.error("Error signing transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// send transaction
-	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+	const txr = await chain.eth
+		.sendSignedTransaction(signedTx.rawTransaction)
+		.catch((err) => {
+			console.error("Error sending transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	console.log("removeVoterFromElection", txr);
-	res.status(200).json({ success: 1 });
+	res.status(200).json({ success: 1, txr: txr });
 });
 
 // @route DELETE /api/voter/:addr
@@ -140,11 +184,12 @@ const removeVoter = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
-		res.status(500).json({ success: 0 });
-		return;
-	});
+	const gasEstimate = await chain.eth
+		.estimateGas(rawTx)
+		.catch((err) => {
+			console.error("Error estimating gas:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -152,13 +197,23 @@ const removeVoter = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount.signTransaction(rawTx);
+	const signedTx = await adminAccount
+		.signTransaction(rawTx)
+		.catch((err) => {
+			console.error("Error signing transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	// send transaction
-	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+	const txr = await chain.eth
+		.sendSignedTransaction(signedTx.rawTransaction)
+		.catch((err) => {
+			console.error("Error sending transaction:", err);
+			res.status(500).json({ success: 0 });
+		});
 
 	console.log("removeVoter", txr);
-	res.status(200).json({ success: 1 });
+	res.status(200).json({ success: 1, txr: txr });
 });
 
 module.exports = {
