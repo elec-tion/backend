@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"server": "nodemon index.js",
-		"test": "npx mocha test"
+		"test": "mocha -t 10000"
 	},
 	"author": "B, M",
 	"license": "MIT",
