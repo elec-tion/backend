@@ -1,5 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
+const { serialize } = require("../utils");
 
 // @route POST /api/committeemember/:adddr/:name
 // @access private
@@ -40,8 +41,11 @@ const addElectionCommitteeMember = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addElectionCommitteeMember", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route POST /api/committeemember/:addr/:elecId
@@ -83,8 +87,11 @@ const addElectionCommitteeMemberToElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addElectionCommitteeMemberToElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/committeemember/:adddr/:elecId
@@ -126,8 +133,11 @@ const removeElectionCommitteeMemberFromElection = asyncHandler(async (req, res) 
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeElectionCommitteeMemberFromElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/committeemember/:adddr
@@ -169,8 +179,11 @@ const removeElectionCommitteeMember = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeElectionCommitteeMember", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route GET /api/committeemember

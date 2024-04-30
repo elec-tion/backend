@@ -11,8 +11,8 @@ const {
 router.route("/district/:id/:name").post(addDistrict);
 router.route("/district/:id").delete(removeDistrict);
 
-router.route("/district/:districtId/:electionId").post(addDistrictToElection);
-router.route("/district/:electionId/:districtId").delete(removeDistrictFromElection);
+router.route("/districtwithelection/:electionId/:districtId").post(addDistrictToElection);
+router.route("/districtwithelection/:electionId/:districtId").delete(removeDistrictFromElection);
 
 router.route("/district/:id").get(getDistrict);
 

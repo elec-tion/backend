@@ -1,5 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
+const { serialize } = require("../utils");
 
 // @route POST /api/candidate/:name/:districtId/:addr
 // @access private
@@ -40,8 +41,11 @@ const addCandidate = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addCandidate", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route GET /api/candidate/:addr
@@ -105,8 +109,11 @@ const addCandidateToElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addCandidateToElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/candidate/:elecId/:addr
@@ -146,8 +153,11 @@ const removeCandidateFromElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeCandidateFromElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/candidate/:addr
@@ -189,8 +199,11 @@ const removeCandidate = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeCandidate", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 module.exports = {

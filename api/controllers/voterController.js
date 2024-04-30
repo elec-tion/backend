@@ -1,5 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
+const { serialize } = require("../utils");
 
 // @route POST /api/voterwithelection/:addr/:elecId
 // @access private
@@ -40,8 +41,11 @@ const addVoterToElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addVoterToElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route POST /api/voterwithdistrict/:addr/:districtId
@@ -83,8 +87,11 @@ const addDistrictToVoter = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addDistrictToVoter", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/voterwithdistrict/:addr/:districtId
@@ -126,8 +133,11 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeDistrictFromVoter", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/voterwithelection/:elecId/:addr
@@ -169,8 +179,11 @@ const removeVoterFromElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeVoterFromElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/voter/:addr
@@ -212,8 +225,11 @@ const removeVoter = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeVoter", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 module.exports = {

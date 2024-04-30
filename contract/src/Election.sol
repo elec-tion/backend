@@ -13,7 +13,7 @@ contract ElectionContract {
     }
 
     struct Election {
-        uint id;
+        string id;
         string name;
         string[] districtIDs;
         address[] candidateAddresses;
@@ -35,7 +35,7 @@ contract ElectionContract {
 
     struct Voter {
         District district;
-        uint[] electionIDs;
+        string[] electionIDs;
     }
 
     Admin public admin; 
@@ -44,9 +44,9 @@ contract ElectionContract {
     mapping(address => ElectionCommittee) public electionCommitteeMembers; // election committee member details with that specified member address
     mapping(address => bool) public isElectionComitteMemberExists; // to check if election committee member exists with that specified member address
 
-    uint public electionCounter; // counter to keep track of the number of elections
-    mapping(uint => Election) public elections; // election details with that specified election id
-    mapping(uint => bool) public isElectionExists; // to check if election exists with that specified election id
+    string[] public electionIDs; // string Array of election ids to keep track of election ids
+    mapping(string => Election) public elections; // election details with that specified election id
+    mapping(string => bool) public isElectionExists; // to check if election exists with that specified election id
 
     mapping(string => District) public districts; // district id like "00-01-01-01" to district details
     mapping(string => bool) public isDistrictExists; // to check if district exists with that specified district
@@ -73,7 +73,6 @@ contract ElectionContract {
 
     // Constructor to set the initial admin
     constructor() {
-        electionCounter = 0;
         electionCommitteeMemberCounter = 0;
         // Set the admin to the address that deploys the contract
         admin.wallet = msg.sender;
@@ -100,7 +99,7 @@ contract ElectionContract {
     }
 
     // Function to create a new election -for admin-
-    function createElection(string memory _name, uint256 _startDate, uint256 _endDate) public onlyAdmin {
+    function createElection(string memory _name, uint256 _startDate, uint256 _endDate, string memory _electionId) public onlyAdmin {
 
         // Initialize empty arrays for districts, candidates  and members
         string[] memory emptyDistricts;
@@ -108,8 +107,8 @@ contract ElectionContract {
         address[] memory emptyMembers;
 
         // Create a new Election struct and add it to the elections array
-        elections[electionCounter] = Election(
-            electionCounter, 
+        elections[_electionId] = Election(
+            _electionId, 
             _name, 
             emptyDistricts, 
             emptyCandidates, 
@@ -117,12 +116,12 @@ contract ElectionContract {
             _startDate, // Election start date in seconds
             _endDate // Election end date in seconds
         );
-        isElectionExists[electionCounter] = true;
-        electionCounter = electionCounter + 1;
+        isElectionExists[_electionId] = true;
+        electionIDs.push(_electionId);
     }
 
     // Function to add a committe member to a specific election -for admin-
-    function addElectionCommitteeMemberToElection(address _member, uint _electionId) public onlyAdmin {
+    function addElectionCommitteeMemberToElection(address _member, string memory _electionId) public onlyAdmin {
         // Check if the member exists. 
         require(isElectionComitteMemberExists[_member], "Member does not exist");
         // Check if the election exists
@@ -138,7 +137,7 @@ contract ElectionContract {
     }
 
     // Function to remove a committe member from a specific election -for admin-
-    function removeElectionCommitteeMemberFromElection(address _member, uint _electionId) public onlyAdmin {
+    function removeElectionCommitteeMemberFromElection(address _member, string memory _electionId) public onlyAdmin {
         // Check if the member exists. 
         require(isElectionComitteMemberExists[_member], "Member does not exist");
         // Check if the election exists
@@ -173,7 +172,7 @@ contract ElectionContract {
     }
 
     // Function to remove an election
-    function removeElection(uint _electionId) public onlyAdmin {
+    function removeElection(string memory _electionId) public onlyAdmin {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
 
@@ -182,19 +181,19 @@ contract ElectionContract {
     }
 
     // Function to add a new district -for admin-
-    function addDistrict(string memory _name, string memory _id) public onlyAdmin {
+    function addDistrict(string memory _name, string memory _districtId) public onlyAdmin {
         // Check if the district already exists
-        require(!isDistrictExists[_id], "District already exists");
+        require(!isDistrictExists[_districtId], "District already exists");
         
         // If not, add the district to the mappings
-        isDistrictExists[_id] = true;
-        districts[_id] = District(_name, _id);
+        isDistrictExists[_districtId] = true;
+        districts[_districtId] = District(_name, _districtId);
     }
 
 
     // Function to add district to an election -for admin-
     // adding a district to a specific election
-    function addDistrictToElection(uint _electionId, string memory _districtId) public onlyAdmin {
+    function addDistrictToElection(string memory _electionId, string memory _districtId) public onlyAdmin {
         // Check if the election exists & district exists
         require(isElectionExists[_electionId], "Election does not exist");
         require(isDistrictExists[_districtId], "District does not exist");
@@ -204,16 +203,16 @@ contract ElectionContract {
     }
 
     // Function to remove a district from an election -for admin-
-    function removeDistrictFromElection(uint _electionId, string memory _id) public onlyAdmin {
+    function removeDistrictFromElection(string memory _electionId, string memory _districtId) public onlyAdmin {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
         // Check if the district exists
-        require(isDistrictExists[_id], "District does not exist");
+        require(isDistrictExists[_districtId], "District does not exist");
 
         // Find the index of the district in the districtIDs array
         uint index = 0;
         for (uint i = 0; i < elections[_electionId].districtIDs.length; i++) {
-            if (keccak256(abi.encodePacked(elections[_electionId].districtIDs[i])) == keccak256(abi.encodePacked(_id))) {
+            if (keccak256(abi.encodePacked(elections[_electionId].districtIDs[i])) == keccak256(abi.encodePacked(_districtId))) {
                 index = i;
                 break;
             }
@@ -238,13 +237,13 @@ contract ElectionContract {
     }
 
     // Function to remove a district
-    function removeDistrict(string memory _id) public onlyAdmin {
+    function removeDistrict(string memory _districtId) public onlyAdmin {
         // Check if the district exists
-        require(isDistrictExists[_id], "District does not exist");
+        require(isDistrictExists[_districtId], "District does not exist");
 
         // If yes, delete the district from the mappings
-        delete districts[_id];
-        delete isDistrictExists[_id];
+        delete districts[_districtId];
+        delete isDistrictExists[_districtId];
     }
 
     // adding a new candidate to a specific election
@@ -261,7 +260,7 @@ contract ElectionContract {
     }
 
     // Function to add candidate to an election for admin
-    function addCandidateToElection(uint _electionId, address _wallet) public onlyAdmin {
+    function addCandidateToElection(string memory _electionId, address _wallet) public onlyAdmin {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
         // Check if the candidate exists
@@ -272,7 +271,7 @@ contract ElectionContract {
     }
 
     // Function to remove a candidate from an election for admin
-    function removeCandidateFromElection(uint _electionId, address _wallet) public onlyAdmin {
+    function removeCandidateFromElection(string memory _electionId, address _wallet) public onlyAdmin {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
         // Check if the candidate exists
@@ -322,14 +321,14 @@ contract ElectionContract {
         require(!isVoterExists[msg.sender], "User already registered");
 
         // Initialize an empty array for election ids
-        uint[] memory emptyElectionIds;
+        string[] memory emptyElectionIds;
 
         // Create a new Voter struct and assign it to the sender's address in the voters mapping
         isVoterExists[msg.sender] = true;
         voters[msg.sender] = Voter(District("null", "null"), emptyElectionIds);
     }
 
-    function addVoterToElection(address _voter, uint _electionId)  public onlyAdmin () {
+    function addVoterToElection(address _voter, string memory _electionId)  public onlyAdmin () {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
         // check if the voter exists.
@@ -340,7 +339,7 @@ contract ElectionContract {
     }
 
     // Function to remove a voter from an election -for admin-
-    function removeVoterFromElection(uint _electionId, address _voter) public onlyAdmin {
+    function removeVoterFromElection(string memory _electionId, address _voter) public onlyAdmin {
         // Check if the election exists
         require(isElectionExists[_electionId], "Election does not exist");
         // Check if the voter exists
@@ -349,14 +348,14 @@ contract ElectionContract {
         // Find the index of the voter in the voters array
         uint index = 0;
         for (uint i = 0; i < voters[_voter].electionIDs.length; i++) {
-            if (voters[_voter].electionIDs[i] == _electionId) {
+            if (keccak256(abi.encodePacked((voters[_voter].electionIDs[i]))) == keccak256(abi.encodePacked((_electionId)))) {
                 index = i;
                 break;
             }
         }
 
         // Create a new array to store the voter's election IDs
-        uint[] memory newElectionIDs = new uint[](voters[_voter].electionIDs.length - 1);
+        string[] memory newElectionIDs = new string[](voters[_voter].electionIDs.length - 1);
 
         // Assign the voter's election IDs to the new array, excluding the election ID to be removed
         uint j = 0;
@@ -408,7 +407,7 @@ contract ElectionContract {
 
     // Function to get the elections a voter can participate in
     // user can call this function see their elections that they can participate
-    function getVotersElections() public view returns (uint[] memory) {
+    function getVotersElections() public view returns (string[] memory) {
         // check if the voter exists. 
         require(isVoterExists[msg.sender], "User not exist");
         // check if any election is assigned to the voter
@@ -424,11 +423,6 @@ contract ElectionContract {
         return voters[_voter];
     }
 
-    // Function to get the total number of elections
-    function getElectionsLength() public view returns (uint) {
-        return electionCounter;
-    }
-
     // Function to get the total number of election committee members
     function getElectionCommitteeMembersLength() public view returns (uint) {
         return electionCommitteeMemberCounter;
@@ -442,12 +436,23 @@ contract ElectionContract {
         return electionCommitteeMembers[_wallet];
     }
 
-    // Funtion to return specific election's details
-    function getElectionDetails(uint _id) public view returns (Election memory) {
-        // Check if the election exists
-        require(isElectionExists[_id], "Election does not exists");
+    // Function to get all election IDs
+    function getElectionIDs() public view returns (string[] memory) {
+        return electionIDs;
+    }
 
-        return elections[_id];
+    // Funtion to return specific election's details
+    function getElectionDetails(string memory _electionId) public view returns (Election memory) {
+        // Check if the election exists
+        require(isElectionExists[_electionId], "Election does not exists");
+
+        return elections[_electionId];
+    }
+
+    // Function to get the total number of elections
+    function getElectionsLength() public view returns (uint) {
+        // Return the length of electionIDs in the array
+        return electionIDs.length;
     }
 
     // Funtion to return specific candidate's details
@@ -459,11 +464,11 @@ contract ElectionContract {
     }
 
     // Funtion to return specific district's details
-    function getDistrictDetails(string memory _id) public view returns (District memory) {
+    function getDistrictDetails(string memory _districtId) public view returns (District memory) {
         // Check if the district already exists
-        require(isDistrictExists[_id], "District does not exists");
+        require(isDistrictExists[_districtId], "District does not exists");
 
-        return districts[_id];
+        return districts[_districtId];
     }
 
 }

@@ -1,5 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
+const { serialize } = require("../utils");
 
 // @route POST /api/district/:id/:name
 // @access private
@@ -40,8 +41,11 @@ const addDistrict = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addDistrict", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route GET /api/district/:id
@@ -100,8 +104,11 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("addDistrictToElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/district/:electionId/:districtId
@@ -143,8 +150,11 @@ const removeDistrictFromElection = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeDistrictFromElection", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/district/:id
@@ -186,8 +196,11 @@ const removeDistrict = asyncHandler(async (req, res) => {
 			res.status(500).json({ success: 0 });
 		});
 
+	// transaction receipt converter
+	const _txr = serialize(txr);
+
 	console.log("removeDistrict", txr);
-	res.status(200).json({ success: 1, txr: txr });
+	res.status(200).json({ success: 1, txr: _txr });
 });
 
 module.exports = {
