@@ -32,9 +32,13 @@ if (command === "compile") {
 			console.error("Error deploying contract:", error);
 		});
 } else if (command === "help") {
-	console.log("Usage: node index.js [command]");
+	console.log("Usage: node index.js [command] or npm run [command]");
 	console.log("Commands:");
-	console.log("   compile: Compile contract");
-	console.log("   deploy: Deploy contract");
-	console.log("   help: Display this help message");
+	console.log("\tcompile\t\t-> Compile contract for e-lection Network");
+	console.log("\tdeploy\t\t-> Deploy contract to e-lection Network");
+	console.log("\thardhat:compile\t-> Compile contract for Hardhat local network");
+	console.log("\thardhat:deploy\t-> Deploy contract to Hardhat local network");
+	console.log("\thardhat:test\t-> Run tests using Hardhat local network");
+	console.log("\thardhat:node\t-> Start Hardhat local network");
+	console.log("\thelp\t\t-> Display this help message");
 }
