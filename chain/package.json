@@ -4,17 +4,16 @@
 	"description": "chain connection",
 	"main": "index.js",
 	"scripts": {
-		"test": "npx mocha test"
+		"test": "mocha test"
 	},
 	"author": "B, M",
 	"license": "MIT",
 	"dependencies": {
-		"@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
-		"chai": "^4.2.0",
 		"dotenv": "^16.4.5",
 		"web3": "^4.8.0"
 	},
 	"devDependencies": {
+		"chai": "^4.2.0",
 		"mocha": "^10.4.0"
 	}
 }
