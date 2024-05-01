@@ -186,22 +186,6 @@ const removeElectionCommitteeMember = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
-// @route GET /api/committeemember
-// @access private
-const getElectionCommitteeMemberLength = asyncHandler(async (req, res) => {
-	const fCall = await contractInstance.methods
-		.getElectionCommitteeMemberLength()
-		.call()
-		.catch((err) => {
-			console.error("Error calling getElectionCommitteeMemberLength:", err);
-			res.status(500).json({ success: 0 });
-		});
-
-	res.status(200).json({
-		length: Number(fCall),
-	});
-});
-
 // @route GET /api/committeemember/:addr
 // @access private
 const getElectionCommitteeMemberDetails = asyncHandler(async (req, res) => {
@@ -225,6 +209,5 @@ module.exports = {
 	addElectionCommitteeMemberToElection,
 	removeElectionCommitteeMemberFromElection,
 	removeElectionCommitteeMember,
-	getElectionCommitteeMemberLength,
 	getElectionCommitteeMemberDetails,
 };
