@@ -1,7 +1,7 @@
 const chai = require("chai");
-const sinon = require("sinon");
 const dotenv = require("dotenv");
 dotenv.config();
+chai.use(require('chai-uuid'));
 
 // tools for testing
 const { 
@@ -29,7 +29,6 @@ const {
 const {
 	addElectionCommitteeMember,
 	getElectionCommitteeMemberDetails,
-	getElectionCommitteeMemberLength,
 	addElectionCommitteeMemberToElection,
 	removeElectionCommitteeMemberFromElection,
 	removeElectionCommitteeMember,
@@ -111,8 +110,8 @@ describe("District Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
@@ -149,7 +148,6 @@ describe("District Controller", async () => {
 	it("should successfully remove a district from the contract", async () => {
 		const req = {
 			params: {
-				name: "districtName",
 				id: "01",
 			},
 		};
@@ -164,8 +162,8 @@ describe("District Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");;
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
@@ -178,7 +176,7 @@ describe("Election Committee Member Controller", async () => {
 	it("should successfully add an election committee member to the contract", async () => {
 		const req = {
 			params: {
-				name: "electionCommitteeMemberName",
+				name: "electionCommitteeAccountName",
 				addr: electionCommitteeAccounts[0].address,
 			},
 		};
@@ -193,8 +191,8 @@ describe("Election Committee Member Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
@@ -220,7 +218,7 @@ describe("Election Committee Member Controller", async () => {
 
 				chai.expect(data).to.have.property("name");
 				chai.expect(data.name).to.be.a("string");
-				chai.expect(data.name).to.equal("electionCommitteeMemberName");
+				chai.expect(data.name).to.equal("electionCommitteeAccountName");
 
 				chai.expect(data).to.have.property("wallet");
 				chai.expect(data.wallet).to.be.a("string");
@@ -229,24 +227,6 @@ describe("Election Committee Member Controller", async () => {
 		};
 
 		await getElectionCommitteeMemberDetails(req, res);
-	});
-
-	// Successfully retrieves length of election committee members from the contract
-	it("should successfully retrieve length of election committee members from the contract", async () => {
-		const req = {};
-		const res = {
-			status: function (statusCode) {
-				chai.expect(statusCode).to.equal(200);
-				return res;
-			},
-			json: function (data) {
-				chai.expect(data).to.have.property("length");
-				chai.expect(data.length).to.be.a("number");
-				chai.expect(data.length).to.equal(1);
-			},
-		};
-
-		await getElectionCommitteeMemberLength(req, res);
 	});
 
 	// Successfully removes an election committee member from the contract
@@ -267,8 +247,8 @@ describe("Election Committee Member Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
@@ -277,6 +257,33 @@ describe("Election Committee Member Controller", async () => {
 });
 
 describe("Candidate Controller", async () => {
+	// Add a district to the contract for testing candidate functions
+	before(async () => {
+		const req = {
+			params: {
+				name: "districtName",
+				id: "01",
+			},
+		};
+		const res = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return res;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await addDistrict(req, res);
+	});
+
 	// Successfully adds a candidate to the contract
 	it("should successfully add a candidate to the contract", async () => {
 		const req = {
@@ -297,8 +304,8 @@ describe("Candidate Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
@@ -327,6 +334,8 @@ describe("Candidate Controller", async () => {
 				chai.expect(data.wallet).to.equal(candidateAccounts[0].address);
 
 				chai.expect(data).to.have.property("district");
+				chai.expect(data.district).to.be.a("object");
+
 				chai.expect(data.district).to.have.property("id");
 				chai.expect(data.district.id).to.be.a("string");
 				chai.expect(data.district.id).to.equal("01");
@@ -358,22 +367,19 @@ describe("Candidate Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
 		await removeCandidate(req, res);
 	});
-});
 
-describe("Election Controller", async () => {
-	// Successfully adds an election to the contract
-	it("should successfully add an election to the contract", async () => {
+	// Delete the district from the contract for testing candidate functions
+	after(async () => {
 		const req = {
 			params: {
-				name: "electionName",
-				districts: ["01", "02"],
+				id: "01",
 			},
 		};
 		const res = {
@@ -387,19 +393,84 @@ describe("Election Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
-		await addElection(req, res);
+		await removeDistrict(req, res);
+	});
+
+});
+
+describe("Election Controller", async () => {
+	let _id = "";
+	// Add a district to the contract for testing election functions
+	before(async () => {
+		const req = {
+			params: {
+				name: "districtName",
+				id: "01",
+			},
+		};
+		const res = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return res;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await addDistrict(req, res);
+	});
+
+	// Successfully adds an election to the contract
+	it("should successfully create an election to the contract", async () => {
+		const req = {
+			params: {
+				name: "electionName",
+				startDate: 1324556,
+				endDate: 1724557,
+			},
+		};
+		const res = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return res;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+
+				chai.expect(data).to.have.property("id");
+				chai.expect(data.id).to.be.a("string");
+				chai.expect(data.id).to.be.a.uuid("v4");
+
+				_id = data.id;
+			},
+		};
+
+		await createElection(req, res);
 	});
 
 	// Successfully retrieves an election from the contract
 	it("should successfully retrieve an election from the contract", async () => {
 		const req = {
 			params: {
-				id: "1",
+				id: _id,
 			},
 		};
 		const res = {
@@ -411,6 +482,31 @@ describe("Election Controller", async () => {
 				chai.expect(data).to.have.property("name");
 				chai.expect(data.name).to.be.a("string");
 				chai.expect(data.name).to.equal("electionName");
+
+				chai.expect(data).to.have.property("startDate");
+				chai.expect(data.startDate).to.be.a("number");
+				chai.expect(data.startDate).to.equal(1324556);
+
+				chai.expect(data).to.have.property("endDate");
+				chai.expect(data.endDate).to.be.a("number");
+				chai.expect(data.endDate).to.equal(1724557);
+
+				chai.expect(data).to.have.property("id");
+				chai.expect(data.id).to.be.a("string");
+				chai.expect(data.id).to.be.a.uuid("v4");
+				chai.expect(data.id).to.equal(_id);
+				
+				chai.expect(data).to.have.property("districtIDs");
+				chai.expect(data.districtIDs).to.be.a("array");
+				chai.expect(data.districtIDs).to.have.lengthOf(0);
+
+				chai.expect(data).to.have.property("candidateAddresses");
+				chai.expect(data.candidateAddresses).to.be.a("array");
+				chai.expect(data.candidateAddresses).to.have.lengthOf(0);
+
+				chai.expect(data).to.have.property("electionCommittee");
+				chai.expect(data.electionCommittee).to.be.a("array");
+				chai.expect(data.electionCommittee).to.have.lengthOf(0);
 			},
 		};
 
@@ -421,7 +517,7 @@ describe("Election Controller", async () => {
 	it("should successfully remove an election from the contract", async () => {
 		const req = {
 			params: {
-				id: "1",
+				id: _id,
 			},
 		};
 		const res = {
@@ -435,21 +531,106 @@ describe("Election Controller", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
 		await removeElection(req, res);
 	});
+
+	// Successfully removes a district from the contract
+	after(async () => {
+		const req = {
+			params: {
+				id: "01",
+			},
+		};
+		const res = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return res;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await removeDistrict(req, res);
+	});
 });
 
 describe("Election-District", async () => {
+	this.timeout(20000);
+	let _id;
+	// Add a district and an election to the contract for testing election functions
+	before(async () => {
+		const reqDistrict = {
+			params: {
+				name: "Test District",
+				id: "01",
+			},
+		};
+		const reqElection = {
+			params: {
+				name: "Test Election",
+				startDate: 1324556,
+				endDate: 1724557,
+			},
+		}
+		const resElection = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resElection;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+
+				chai.expect(data).to.have.property("id");
+				chai.expect(data.id).to.be.a("string");
+				chai.expect(data.id).to.be.a.uuid("v4");
+
+				_id = data.id;
+			},
+		};
+		const resDistrict = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resDistrict;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await addDistrict(reqDistrict, resDistrict);
+		await createElection(reqElection, resElection);
+
+	});
+
 	// Successfully adds a district to an election
 	it("should successfully add a district to an election", async () => {
 		const req = {
 			params: {
-				electionID: 1,
+				electionID: _id,
 				districtID: "01",
 			},
 		};
@@ -464,8 +645,8 @@ describe("Election-District", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
@@ -476,7 +657,7 @@ describe("Election-District", async () => {
 	it("should successfully remove a district from an election", async () => {
 		const req = {
 			params: {
-				electionID: 1,
+				electionID: _id,
 				districtID: "01",
 			},
 		};
@@ -491,22 +672,128 @@ describe("Election-District", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
 		await removeDistrictFromElection(req, res);
 	});
+
+	// Removes district and election from contract for testing
+	after(async () => {
+		const reqElection = {
+			params: {
+				id: _id,
+			},
+		};
+		const reqDistrict = {
+			params: {
+				id: "01",
+			},
+		};
+
+		const resElection = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resElection;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+				
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+		const resDistrict = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resDistrict;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+				
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+		await removeElection(reqElection, resElection);
+		await removeDistrict(reqDistrict, resDistrict);
+	});
 });
 
 describe("Committee-Election", async () => {
+	this.timeout(20000);
+	let _id;
+	// Add a district and an election to the contract for testing election functions
+	before(async () => {
+		const reqCommittee = {
+			params: {
+				name: "Test Committee",
+				addr: electionCommitteeAccounts[0].address,
+			},
+		};
+		const reqElection = {
+			params: {
+				name: "Test Election",
+				startDate: 1324556,
+				endDate: 1724557,
+			},
+		}
+		const resElection = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resElection;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+
+				chai.expect(data).to.have.property("id");
+				chai.expect(data.id).to.be.a("string");
+				chai.expect(data.id).to.be.a.uuid("v4");
+
+				_id = data.id;
+			},
+		};
+		const resCommittee = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resCommittee;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await addElectionCommitteeMember(reqCommittee, resCommittee);
+		await createElection(reqElection, resElection);
+
+	});
+
 	// Successfully adds an election to a committee
 	it("should successfully add an election to a committee", async () => {
 		const req = {
 			params: {
-				electionID: 1,
-				committeeID: "01",
+				elecId: _id,
+				addr: electionCommitteeAccounts[0].address,
 			},
 		};
 		const res = {
@@ -520,20 +807,20 @@ describe("Committee-Election", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
-		await addElectionToCommittee(req, res);
+		await addElectionCommitteeMemberToElection(req, res);
 	});
 
 	// Successfully removes an election from a committee
 	it("should successfully remove an election from a committee", async () => {
 		const req = {
 			params: {
-				electionID: 1,
-				committeeID: "01",
+				elecId: _id,
+				addr: electionCommitteeAccounts[0].address,
 			},
 		};
 		const res = {
@@ -547,11 +834,59 @@ describe("Committee-Election", async () => {
 				chai.expect(data.success).to.equal(1);
 
 				chai.expect(data.txr).to.have.property("status");
-				chai.expect(data.txr.status).to.be.a("bigint");
-				chai.expect(data.txr.status).to.equal(BigInt(1));
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
 			},
 		};
 
-		await removeElectionFromCommittee(req, res);
+		await removeElectionCommitteeMemberFromElection(req, res);
+	});
+
+	// Removes committee and election from contract for testing
+	after(async () => {
+		const reqElection = {
+			params: {
+				id: _id,
+			},
+		};
+		const reqCommittee = {
+			params: {
+				addr: electionCommitteeAccounts[0].address,
+			},
+		};
+
+		const resElection = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resElection;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+		const resCommittee = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resCommittee;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await removeElectionCommitteeMember(reqCommittee, resCommittee);
+		await removeElection(reqElection, resElection);
 	});
 });
