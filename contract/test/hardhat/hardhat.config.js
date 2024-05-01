@@ -5,10 +5,10 @@ module.exports = {
 	solidity: "0.8.19",
 	paths: {
 		root: "../../",
-		sources: "./contract/src",
-		tests: "./tests/hardhat/src",
-		cache: "./tests/hardhat/cache",
-		artifacts: "./tests/hardhat/artifacts",
+		sources: "./src",
+		tests: "./test/hardhat/src",
+		cache: "./test/hardhat/cache",
+		artifacts: "./test/hardhat/artifacts",
 	},
 	settings: {
 		optimizer: {

@@ -7,14 +7,21 @@
 		"deploy": "node ./index.js deploy",
 		"execute": "node ./index.js execute",
 		"test": "npx mocha test",
+		"hardhat:test" : "npx hardhat --config .\\test\\hardhat\\hardhat.config.js test",
+		"hardhat:node" : "npx hardhat --config .\\test\\hardhat\\hardhat.config.js node",
+		"hardhat:compile" : "npx hardhat --config .\\test\\hardhat\\hardhat.config.js compile",
+		"hardhat:deploy": "npx hardhat --config .\\test\\hardhat\\hardhat.config.js run .\\test\\hardhat\\scripts\\deploy.js --network localhost",
 		"help": "node ./index.js help"
 	},
 	"dependencies": {
 		"chai": "4.2.0",
 		"dotenv": "^16.4.5",
+		"uuid": "^9.0.1",
 		"web3": "^4.6.0",
 		"web3-eth": "^4.5.0",
-		"web3-quorum": "^0.1.1"
+		"web3-quorum": "^0.1.1",
+		"@nomicfoundation/hardhat-toolbox": "^5.0.0",
+		"hardhat": "^2.22.2"
 	},
 	"devDependencies": {
 		"solc": "0.8.19",

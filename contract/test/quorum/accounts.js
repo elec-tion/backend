@@ -1,4 +1,4 @@
-const { chain } = require("../../chain");
+const { chain } = require("../../../chain");
 const crypto = require('crypto');
 // Create accounts
 const voterAccounts = [

@@ -1,4 +1,4 @@
-const { chain, adminAccount, contractInstance } = require("../../chain");
+const { chain, adminAccount, contractInstance } = require("../../../chain/index.js");
 const { voterAccounts, candidateAccounts, electionCommitteeAccounts } = require("./accounts.js");
 const fs = require("fs");
 const path = require("path");

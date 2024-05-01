@@ -130,16 +130,8 @@ dist
 .pnp.*
 
 # Hardhat files
-/tests/hardhat/cache
-/tests/hardhat/artifacts
-
-# TypeChain files
-/tests/hardhat/typechain
-/tests/hardhat/typechain-types
-
-# solidity-coverage files
-/tests/hardhat/coverage
-/tests/hardhat/coverage.json
+/contract/test/hardhat/cache
+/contract/test/hardhat/artifacts
 
 # vscode personal files
 .vscode/settings.json
