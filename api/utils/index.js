@@ -16,6 +16,36 @@ const serialize = (obj) => {
 	return serialized;
 };
 
+
+const pino = require('pino');
+
+
+const logger = pino({
+	
+
+	
+}, pino.transport({
+	targets: [
+		{
+			level: "trace",
+			target: "pino/file",
+			options: {
+				destination: "./logs/api.log",
+			},
+		},
+		{
+			level: "trace",
+			target: "pino-pretty",
+			options: {},
+		},
+	]
+  }));
+
+
+
 module.exports = {
 	serialize,
 };
+
+module.exports = logger;
+
