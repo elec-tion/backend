@@ -1,6 +1,8 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
-const { serialize } = require("../utils");
+const { serialize} = require("../utils");
+const logger = require("../utils");
+
 
 // @route POST /api/candidate/:name/:districtId/:addr
 // @access private
@@ -16,7 +18,7 @@ const addCandidate = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-			console.error("Error estimating gas:", err);
+			logger.error(`Error estimating gas: ${err}`);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -25,27 +27,36 @@ const addCandidate = asyncHandler(async (req, res) => {
 	rawTx.gasLimit = _gasLimit;
 	rawTx.gasPrice = "0x0";
 
-	// sign transaction
+	if (gasEstimate === undefined) {
+		// Handle the case when gas estimate is undefined
+		logger.error('Gas estimate is undefined');
+		res.status(500).json({ success: 0 });
+	} else {
+		// sign transaction
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error("Error signing transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
-
-	// send transaction
+			// send transaction
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error("Error sending transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
-
-	console.log("addCandidate", txr);
+	
+	logger.log("addCandidate", txr);
 	res.status(200).json({ success: 1, txr: _txr });
+	}
+	
+
+
+
 });
 
 // @route GET /api/candidate/:addr
@@ -55,11 +66,11 @@ const getCandidate = asyncHandler(async (req, res) => {
 		.getCandidateDetails(req.params.addr)
 		.call()
 		.catch((err) => {
-			console.error("Error getting candidate details:", err);
+			logger.error("Error getting candidate details:", err);
 			res.status(500).json({ success: 0 });
 		});
 
-	console.log("getCandidate");
+	logger.log("getCandidate");
 	res.status(200).json({
 		name: candidate.name,
 		wallet: candidate.wallet,
@@ -84,7 +95,7 @@ const addCandidateToElection = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-			console.error("Error estimating gas:", err);
+			logger.error("Error estimating gas:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -97,7 +108,7 @@ const addCandidateToElection = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error("Error signing transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -105,14 +116,14 @@ const addCandidateToElection = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error("Error sending transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("addCandidateToElection", txr);
+	logger.log("addCandidateToElection", txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -128,7 +139,7 @@ const removeCandidateFromElection = asyncHandler(async (req, res) => {
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
+		logger.error("Error estimating gas:", err);
 		res.status(500).json({ success: 0 });
 	});
 
@@ -141,7 +152,7 @@ const removeCandidateFromElection = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error("Error signing transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -149,14 +160,14 @@ const removeCandidateFromElection = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error("Error sending transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeCandidateFromElection", txr);
+	logger.log("removeCandidateFromElection", txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -174,7 +185,7 @@ const removeCandidate = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-			console.error("Error estimating gas:", err);
+			logger.error("Error estimating gas:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -187,7 +198,7 @@ const removeCandidate = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error("Error signing transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -195,14 +206,14 @@ const removeCandidate = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error("Error sending transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeCandidate", txr);
+	logger.log("removeCandidate", txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -213,3 +224,4 @@ module.exports = {
 	removeCandidateFromElection,
 	removeCandidate,
 };
+

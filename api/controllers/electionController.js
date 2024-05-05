@@ -1,4 +1,5 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
+const logger = require("../utils");
 const { serialize } = require("../utils");
 
 const asyncHandler = require("express-async-handler");
@@ -19,7 +20,7 @@ const createElection = asyncHandler(async (req, res) => {
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
+		logger.error("Error estimating gas:", err);
 		res.status(500).json({ success: 0 });
 	});
 
@@ -30,13 +31,13 @@ const createElection = asyncHandler(async (req, res) => {
 
 	// sign transaction
 	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
-		console.error("Error signing transaction:", err);
+		logger.error("Error signing transaction:", err);
 		res.status(500).json({ success: 0 });
 	});
 
 	// send transaction
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
-		console.error("Error sending transaction:", err);
+		logger.error("Error sending transaction:", err);
 		res.status(500).json({ success: 0 });
 	});
 
@@ -51,13 +52,13 @@ const createElection = asyncHandler(async (req, res) => {
 // @route GET /api/election/:id
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
-	console.log("getElectionDetails");
+	logger.info("Calling getElectionDetails..");
 
 	const fCall = await contractInstance.methods
 		.getElectionDetails(req.params.id)
 		.call()
 		.catch((err) => {
-			console.error("Error getting election details:", err);
+			logger.error("Error getting election details:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -75,13 +76,13 @@ const getElectionDetails = asyncHandler(async (req, res) => {
 // @route GET /api/electionids
 // @access private
 const getElectionIDs = asyncHandler(async (req, res) => {
-	console.log("getElectionIDs");
+	logger.info("Calling getElectionIDs..");
 
 	const fCall = await contractInstance.methods
 		.getElectionIDs()
 		.call()
 		.catch((err) => {
-			console.error("Error getting election IDs:", err);
+			logger.error("Error getting election IDs:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -97,11 +98,11 @@ const getElectionsLength = asyncHandler(async (req, res) => {
 		.getElectionsLength()
 		.call()
 		.catch((err) => {
-			console.error("Error calling getElectionsLength:", err);
+			logger.error("Error calling getElectionsLength:", err);
 			res.status(500).json({ success: 0 });
 		});
 
-	console.log(fCall);
+	logger.info(`fCall: ${fCall}`);
 	res.status(200).json({
 		length: Number(fCall),
 	});
@@ -119,7 +120,7 @@ const removeElection = asyncHandler(async (req, res) => {
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		console.error("Error estimating gas:", err);
+		logger.error("Error estimating gas:", err);
 		res.status(500).json({ success: 0 });
 	});
 
@@ -130,20 +131,20 @@ const removeElection = asyncHandler(async (req, res) => {
 
 	// sign transaction
 	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
-		console.error("Error signing transaction:", err);
+		logger.error("Error signing transaction:", err);
 		res.status(500).json({ success: 0 });
 	});
 
 	// send transaction
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
-		console.error("Error sending transaction:", err);
+		logger.error("Error sending transaction:", err);
 		res.status(500).json({ success: 0 });
 	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeElection", txr);
+	logger.info("removeElection", txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
