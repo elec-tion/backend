@@ -1,3 +1,5 @@
+const pino = require("pino");
+
 const serialize = (obj) => {
 	const serialized = {};
 	for (const key in obj) {
@@ -16,36 +18,25 @@ const serialize = (obj) => {
 	return serialized;
 };
 
-
-const pino = require('pino');
-
-
-const logger = pino({
-	
-
-	
-}, pino.transport({
-	targets: [
-		{
-			level: "trace",
-			target: "pino/file",
-			options: {
-				destination: "./logs/api.log",
+const logger = pino(
+	{},
+	pino.transport({
+		targets: [
+			{
+				level: "trace",
+				target: "pino/file",
+				options: {
+					destination: "./logs/api.log",
+				},
 			},
-		},
-		{
-			level: "trace",
-			target: "pino-pretty",
-			options: {},
-		},
-	]
-  }));
-
-
-
-module.exports = {
-	serialize,
-};
+			{
+				level: "trace",
+				target: "pino-pretty",
+				options: {},
+			},
+		],
+	})
+);
 
 module.exports = logger;
-
+module.exports.serialize = serialize;
