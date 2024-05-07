@@ -418,6 +418,10 @@ contract ElectionContract {
         return voters[msg.sender].electionIDs;
     }
 
+    // Function to get the a voters' details (elections and districts)
+
+
+   
     // Function to get the voter details for a given address
     function getVoter( address _voter) public view onlyAdmin returns (Voter memory) {
         return voters[_voter];
