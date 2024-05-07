@@ -1,10 +1,14 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
 const { serialize } = require("../utils");
+const logger = require("../utils");
+
 
 // @route POST /api/district/:id/:name
 // @access private
 const addDistrict = asyncHandler(async (req, res) => {
+	logger.info("Calling addDistrict..");
+
 	// Create raw transaction
 	let rawTx = {
 		from: adminAccount.address,
@@ -16,7 +20,7 @@ const addDistrict = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-			console.error("Error estimating gas:", err);
+			logger.error(err, "Error estimating gas:");
 			res.status(500).json({ success: 0 });
 		});
 
@@ -29,7 +33,7 @@ const addDistrict = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error(err, "Error signing transaction:");
 			res.status(500).json({ success: 0 });
 		})
 
@@ -37,28 +41,32 @@ const addDistrict = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error(err, "Error sending transaction:");
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("addDistrict", txr);
+	logger.info("addDistrict succeeded");
+	logger.info(_txr, "addDistrict transaction receipt: ");
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route GET /api/district/:id
 // @access private
 const getDistrict = asyncHandler(async (req, res) => {
+	logger.info("Calling getDistrict..");
+
 	const fCall = await contractInstance.methods
 		.getDistrictDetails(req.params.id)
 		.call()
 		.catch((err) => {
-			console.error("Error calling getDistrictDetails:", err);
+			logger.error(err, "Error calling getDistrictDetails:");
 			res.status(500).json({ success: 0 });
 		});
 
+	logger.info("getDistrict succeeded");
 	res.status(200).json({
 		id: fCall.districtID,
 		name: fCall.name,
@@ -68,6 +76,8 @@ const getDistrict = asyncHandler(async (req, res) => {
 // @route PUT /api/district/:electionId/:districtId
 // @access private
 const addDistrictToElection = asyncHandler(async (req, res) => {
+	logger.info("Calling addDistrictToElection..");
+
 	// Create raw transaction
 	let rawTx = {
 		from: adminAccount.address,
@@ -79,7 +89,7 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-		console.error("Error estimating gas:", err);
+		logger.error(err, "Error estimating gas:");
 		res.status(500).json({ success: 0 });
 	});
 
@@ -92,7 +102,7 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error(err, "Error signing transaction:");
 			res.status(500).json({ success: 0 });
 		});
 
@@ -100,20 +110,23 @@ const addDistrictToElection = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error(err, "Error sending transaction:");
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("addDistrictToElection", txr);
+	logger.info("addDistrictToElection succeeded");
+	logger.info(_txr, "addDistrictToElection transaction receipt: ");
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/district/:electionId/:districtId
 // @access private
 const removeDistrictFromElection = asyncHandler(async (req, res) => {
+	logger.info("Calling removeDistrictFromElection..");
+
 	// Create raw transaction
 	let rawTx = {
 		from: adminAccount.address,
@@ -125,7 +138,7 @@ const removeDistrictFromElection = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-		console.error("Error estimating gas:", err);
+		logger.error(err, "Error estimating gas:");
 		res.status(500).json({ success: 0 });
 	});
 
@@ -138,7 +151,7 @@ const removeDistrictFromElection = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error(err, "Error signing transaction:");
 			res.status(500).json({ success: 0 });
 		});
 
@@ -146,20 +159,23 @@ const removeDistrictFromElection = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error(err, "Error sending transaction:");
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeDistrictFromElection", txr);
+	logger.info("removeDistrictFromElection succeeded");
+	logger.info(_txr, "removeDistrictFromElection transaction receipt: ");
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
 // @route DELETE /api/district/:id
 // @access private
 const removeDistrict = asyncHandler(async (req, res) => {
+	logger.info("Calling removeDistrict..");
+
 	// Create raw transaction
 	let rawTx = {
 		from: adminAccount.address,
@@ -171,7 +187,7 @@ const removeDistrict = asyncHandler(async (req, res) => {
 	const gasEstimate = await chain.eth
 		.estimateGas(rawTx)
 		.catch((err) => {
-			console.error("Error estimating gas:", err);
+			logger.error("Error estimating gas:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -184,7 +200,7 @@ const removeDistrict = asyncHandler(async (req, res) => {
 	const signedTx = await adminAccount
 		.signTransaction(rawTx)
 		.catch((err) => {
-			console.error("Error signing transaction:", err);
+			logger.error("Error signing transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
@@ -192,16 +208,18 @@ const removeDistrict = asyncHandler(async (req, res) => {
 	const txr = await chain.eth
 		.sendSignedTransaction(signedTx.rawTransaction)
 		.catch((err) => {
-			console.error("Error sending transaction:", err);
+			logger.error("Error sending transaction:", err);
 			res.status(500).json({ success: 0 });
 		});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeDistrict", txr);
+	logger.info("removeDistrict succeeded");
+	logger.info(_txr, "removeDistrict transaction receipt: ");
 	res.status(200).json({ success: 1, txr: _txr });
 });
+
 
 module.exports = {
 	getDistrict,
