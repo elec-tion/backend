@@ -20,7 +20,6 @@ const getBalance = asyncHandler(async (req, res) => {
 	
 });
 
-
 module.exports = {
 	getBalance,
 };

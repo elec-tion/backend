@@ -196,7 +196,6 @@ const removeCandidate = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
-
 module.exports = {
 	addCandidate,
 	addCandidateToElection,
