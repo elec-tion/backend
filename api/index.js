@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv"); dotenv.config();
 const expressPinoLogger = require('express-pino-logger');
 
+const { apiKeyAuth } = require('./middleware/authMiddleware');
 const { errorHandler } = require("./middleware/errorMiddleware");
 const logger = require("./utils");
 
@@ -10,6 +11,7 @@ const IP = process.env.IP || "localhost";
 
 const app = express();
 
+app.use(apiKeyAuth);
 app.use(errorHandler);
 app.use(express.json());
 app.use(expressPinoLogger({ logger }));
