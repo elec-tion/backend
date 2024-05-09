@@ -102,6 +102,8 @@ contract ElectionContract {
 
     // Function to create a new election -for admin-
     function createElection(string memory _name, uint256 _startDate, uint256 _endDate, string memory _electionId) public onlyAdmin {
+        // Check if the election already exists
+        require(!isElectionExists[_electionId], "Election already exists");
 
         // Initialize empty arrays for districts, candidates  and members
         string[] memory emptyDistricts;
@@ -120,6 +122,17 @@ contract ElectionContract {
         );
         isElectionExists[_electionId] = true;
         electionIDs.push(_electionId);
+    }
+
+    // Function to edit an existing election -for admin-
+    function editElection(string memory _name, uint256 _startDate, uint256 _endDate, string memory _electionId) public onlyAdmin {
+        // Check if the election exists
+        require(isElectionExists[_electionId], "Election does not exist");
+
+        // Update the election details
+        elections[_electionId].name = _name;
+        elections[_electionId].startDate = _startDate;
+        elections[_electionId].endDate = _endDate;
     }
 
     // Function to add a committe member to a specific election -for admin-
@@ -191,7 +204,6 @@ contract ElectionContract {
         isDistrictExists[_districtId] = true;
         districts[_districtId] = District(_name, _districtId);
     }
-
 
     // Function to add district to an election -for admin-
     // adding a district to a specific election
@@ -376,7 +388,6 @@ contract ElectionContract {
         // Delete voters' electionID from voter's isVoted mapping
         delete isElectionVotedByVoter[_voter][_electionId];
     }
-
 
     // Function to remove a voter
     // check if the voter exists then delete from the mapping
