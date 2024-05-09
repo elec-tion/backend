@@ -31,6 +31,7 @@ contract ElectionContract {
         string name; // name of the candidate
         address wallet; // wallet address of the candidate
         District district; // district of the candidate
+        uint256 voteCount; // vote count of the candidate
     }
 
     struct Voter {
@@ -57,6 +58,7 @@ contract ElectionContract {
     mapping(address => Voter) public voters; // voter details with that specified voter address
     mapping(address => bool) public isVoterExists; // to check if voter exists with that specified voter address
 
+    mapping(address => mapping (string => bool)) public isElectionVotedByVoter; // to check if voter voted in that specified election
 
     // MODIFIERS
     // Modifier to restrict access to admins only
@@ -256,7 +258,7 @@ contract ElectionContract {
 
         // If not, add the candidate to the mappings
         isCandidateExists[_wallet] = true;
-        candidates[_wallet] = Candidate(_name, _wallet, districts[_districtID]);
+        candidates[_wallet] = Candidate(_name, _wallet, districts[_districtID], 0);
     }
 
     // Function to add candidate to an election for admin
@@ -336,6 +338,7 @@ contract ElectionContract {
 
         // add voter's election
         voters[_voter].electionIDs.push(_electionId);
+        isElectionVotedByVoter[_voter][_electionId] = false;
     }
 
     // Function to remove a voter from an election -for admin-
@@ -370,6 +373,8 @@ contract ElectionContract {
 
         // Update the voter's election IDs array with the new array
         voters[_voter].electionIDs = newElectionIDs;
+        // Delete voters' electionID from voter's isVoted mapping
+        delete isElectionVotedByVoter[_voter][_electionId];
     }
 
 
@@ -381,6 +386,12 @@ contract ElectionContract {
 
         delete voters[_voter];
         delete isVoterExists[_voter];
+        // get keys of mapping
+        for (uint i = 0; i < electionIDs.length; i++) {
+            delete isElectionVotedByVoter[_voter][electionIDs[i]];
+        }
+
+        // delete isElectionVotedByVoter[_voter]; // not work 
     }
     
     // Function to add a district to a voter -for admin-   
@@ -405,33 +416,32 @@ contract ElectionContract {
         voters[_voter].district = District("null", "null");
     }
 
-    // Function to get the elections a voter can participate in
-    // user can call this function see their elections that they can participate
-    function getVotersElections() public view returns (string[] memory) {
-        // check if the voter exists. 
-        require(isVoterExists[msg.sender], "User not exist");
-        // check if any election is assigned to the voter
-        require(
-            voters[msg.sender].electionIDs.length != 0, "Voter can't enter any election");
-       
-        // Return the array of election IDs the voter can participate in
-        return voters[msg.sender].electionIDs;
+    // Voter give vote
+    function vote(string memory _electionId, address _candidate) public {
+        // Check if the voter exists
+        require(isVoterExists[msg.sender], "Voter does not exist");
+
+        // Check if the election exists
+        require(isElectionExists[_electionId], "Election does not exists");
+
+        // Check if the candidate exists
+        require(isCandidateExists[_candidate], "Candidate does not exists");
+
+        // Check if the voter has already voted
+        require(!isElectionVotedByVoter[msg.sender][_electionId], "Voter has already voted");
+
+        // Add the voter's vote
+        candidates[_candidate].voteCount += 1;
+
+        // Voter has voted in that election
+        isElectionVotedByVoter[msg.sender][_electionId] = true;
     }
 
-    // Function to get the a voters' details (elections and districts)
-
-
-   
-    // Function to get the voter details for a given address
-    function getVoter( address _voter) public view onlyAdmin returns (Voter memory) {
-        return voters[_voter];
-    }
-
+    ///////////////// GET FUNCTIONS /////////////////
     // Function to get the total number of election committee members
     function getElectionCommitteeMembersLength() public view returns (uint) {
         return electionCommitteeMemberCounter;
     }
-
     // Function to return spesific election committee member's details
     function getElectionCommitteeMemberDetails(address _wallet) public view returns (ElectionCommittee memory) {
         // Check if the election committee member already exists
@@ -439,12 +449,11 @@ contract ElectionContract {
 
         return electionCommitteeMembers[_wallet];
     }
-
+    
     // Function to get all election IDs
     function getElectionIDs() public view returns (string[] memory) {
         return electionIDs;
     }
-
     // Funtion to return specific election's details
     function getElectionDetails(string memory _electionId) public view returns (Election memory) {
         // Check if the election exists
@@ -452,19 +461,10 @@ contract ElectionContract {
 
         return elections[_electionId];
     }
-
     // Function to get the total number of elections
     function getElectionsLength() public view returns (uint) {
         // Return the length of electionIDs in the array
         return electionIDs.length;
-    }
-
-    // Funtion to return specific candidate's details
-    function getCandidateDetails(address _wallet) public view returns (Candidate memory) {
-        // Check if the candidate already exists
-        require(isCandidateExists[_wallet], "Candidate does not exists");
-
-        return candidates[_wallet];
     }
 
     // Funtion to return specific district's details
@@ -475,4 +475,29 @@ contract ElectionContract {
         return districts[_districtId];
     }
 
+
+    // Funtion to return specific candidate's details
+    function getCandidateDetails(address _wallet) public view returns (Candidate memory) {
+        // Check if the candidate already exists
+        require(isCandidateExists[_wallet], "Candidate does not exists");
+
+        return candidates[_wallet];
+    }
+
+    // Function to get the elections a voter can participate in
+    // user can call this function see their elections that they can participate
+    function getVotersElections() public view returns (string[] memory) {
+        // check if the voter exists. 
+        require(isVoterExists[msg.sender], "User not exist");
+        // check if any election is assigned to the voter
+        require(voters[msg.sender].electionIDs.length != 0, "Voter can't enter any election");
+       
+        // Return the array of election IDs the voter can participate in
+        return voters[msg.sender].electionIDs;
+    }
+
+    // Function to get the voter details for a given address
+    function getVoterDetails(address _voter) public view onlyAdmin returns (Voter memory) {
+        return voters[_voter];
+    }
 }
