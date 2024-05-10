@@ -5,7 +5,7 @@
 	"scripts": {
 		"compile": "node ./index.js compile",
 		"deploy": "node ./index.js deploy",
-		"test": "mocha test -t 10000",
+		"test": "mocha test/quorum -t 10000",
 		"hardhat:compile" : "hardhat --config .\\test\\hardhat\\hardhat.config.js compile",
 		"hardhat:deploy": "hardhat --config .\\test\\hardhat\\hardhat.config.js run .\\test\\hardhat\\scripts\\deploy.js --network localhost",
 		"hardhat:test" : "hardhat --config .\\test\\hardhat\\hardhat.config.js test",
