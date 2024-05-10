@@ -44,7 +44,7 @@ const addVoterToElection = asyncHandler(async (req, res) => {
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("addVoterToElection", txr);
+	console.log("addVoterToElection", _txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -90,7 +90,7 @@ const addDistrictToVoter = asyncHandler(async (req, res) => {
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("addDistrictToVoter", txr);
+	console.log("addDistrictToVoter", _txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -136,7 +136,7 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeDistrictFromVoter", txr);
+	console.log("removeDistrictFromVoter", _txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -182,7 +182,7 @@ const removeVoterFromElection = asyncHandler(async (req, res) => {
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeVoterFromElection", txr);
+	console.log("removeVoterFromElection", _txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
@@ -228,7 +228,7 @@ const removeVoter = asyncHandler(async (req, res) => {
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	console.log("removeVoter", txr);
+	console.log("removeVoter", _txr);
 	res.status(200).json({ success: 1, txr: _txr });
 });
 

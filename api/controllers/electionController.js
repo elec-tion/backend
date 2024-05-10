@@ -8,6 +8,8 @@ const uuid = require("uuid");
 // @route POST /api/election/:name/:startDate/:endDate
 // @access private
 const createElection = asyncHandler(async (req, res) => {
+	logger.info("Calling createElection..");
+
 	// Create UUID for election
 	const _id = uuid.v4();
 
@@ -20,7 +22,7 @@ const createElection = asyncHandler(async (req, res) => {
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		logger.error("Error estimating gas:", err);
+		logger.error(err, "Error estimating gas:");
 		res.status(500).json({ success: 0 });
 	});
 
@@ -31,37 +33,45 @@ const createElection = asyncHandler(async (req, res) => {
 
 	// sign transaction
 	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
-		logger.error("Error signing transaction:", err);
+		logger.error(err, "Error signing transaction:");
 		res.status(500).json({ success: 0 });
 	});
 
 	// send transaction
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
-		logger.error("Error sending transaction:", err);
+		logger.error(err, "Error sending transaction:");
 		res.status(500).json({ success: 0 });
 	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	// TODO: return created election details
-	// getElectionDetails(getElectionsLength());
+	logger.info("createElection succeeded");
+	logger.info("Election details:");
 	res.status(200).json({ success: 1, id: _id, txr: _txr });
 });
+
 
 // @route GET /api/election/:id
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
 	logger.info("Calling getElectionDetails..");
-
+	logger.info(req.params.id);
+	// let body = getElectionDetailsEB(req.params.id);
+	// logger.info(body);
+	// if (body === null) {
+	// 	res.status(500).json({ success: 0 });
+	// } else {
+	// 	res.status(200).json(body);
+	// }
 	const fCall = await contractInstance.methods
 		.getElectionDetails(req.params.id)
 		.call()
 		.catch((err) => {
-			logger.error("Error getting election details:", err);
+			logger.error(err, "Error getting election details:");
 			res.status(500).json({ success: 0 });
 		});
-
+	
 	res.status(200).json({
 		id: fCall.id,
 		name: fCall.name,
@@ -82,7 +92,7 @@ const getElectionIDs = asyncHandler(async (req, res) => {
 		.getElectionIDs()
 		.call()
 		.catch((err) => {
-			logger.error("Error getting election IDs:", err);
+			logger.error(err, "Error getting election IDs:");
 			res.status(500).json({ success: 0 });
 		});
 
@@ -98,7 +108,7 @@ const getElectionsLength = asyncHandler(async (req, res) => {
 		.getElectionsLength()
 		.call()
 		.catch((err) => {
-			logger.error("Error calling getElectionsLength:", err);
+			logger.error(err, "Error calling getElectionsLength:");
 			res.status(500).json({ success: 0 });
 		});
 
@@ -120,7 +130,7 @@ const removeElection = asyncHandler(async (req, res) => {
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		logger.error("Error estimating gas:", err);
+		logger.error(err, "Error estimating gas:");
 		res.status(500).json({ success: 0 });
 	});
 
@@ -131,20 +141,20 @@ const removeElection = asyncHandler(async (req, res) => {
 
 	// sign transaction
 	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
-		logger.error("Error signing transaction:", err);
+		logger.error(err, "Error signing transaction:");
 		res.status(500).json({ success: 0 });
 	});
 
 	// send transaction
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
-		logger.error("Error sending transaction:", err);
+		logger.error(err, "Error sending transaction:");
 		res.status(500).json({ success: 0 });
 	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
-	logger.info("removeElection", txr);
+	logger.info(_txr, "removeElection transaction receipt:");
 	res.status(200).json({ success: 1, txr: _txr });
 });
 
