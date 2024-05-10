@@ -509,6 +509,9 @@ contract ElectionContract {
 
     // Function to get the voter details for a given address
     function getVoterDetails(address _voter) public view onlyAdmin returns (Voter memory) {
+        // check if the voter exists. 
+        require(isVoterExists[_voter], "User not exist");
+
         return voters[_voter];
     }
 }
