@@ -5,7 +5,8 @@ const {
     addDistrictToVoter,
     removeDistrictFromVoter,
     removeVoterFromElection,
-    removeVoter
+    removeVoter,
+    getVoterDetails
 } = require("../controllers/voterController");
 
 router.route("/voterwithdistrict/:addr/:districtId").post(addDistrictToVoter);
@@ -14,6 +15,7 @@ router.route("/voterwithdistrict/:districtId/:addr").delete(removeDistrictFromVo
 router.route("/voterwithelection/:addr/:elecId").post(addVoterToElection);
 router.route("/voterwithelection/:elecId/:addr").delete(removeVoterFromElection);
 
+router.route("/voter/:addr").get(getVoterDetails);
 router.route("/voter/:addr").delete(removeVoter);
 
 module.exports = router;
