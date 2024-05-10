@@ -98,6 +98,44 @@ describe('ElectionContract', function () {
 		const isMemberExistsAfterRemove = await contractInstance.methods.isElectionComitteMemberExists(member.address).call();
 		chai.expect(isMemberExistsAfterRemove).to.equal(false);
 	});
+	// add voter
+	it("Should add voter", async function () {
+		// increase timeout
+		this.timeout(10000);
+
+		const voter = voterAccounts[0];
+		console.log("voter:", voter);
+
+		// Create raw transaction
+		let rawTx = {
+			from: voter.address,
+			to: contractInstance.options.address,
+			data: contractInstance.methods.addVoter().encodeABI(),
+		};
+
+		// estimate gas
+		const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+			console.error("Error estimating gas:", err);
+			return;
+		});
+
+		// convert gas estimate and set gas limit, gas price
+		const _gasLimit = chain.utils.numberToHex(gasEstimate);
+		rawTx.gasLimit = _gasLimit;
+		rawTx.gasPrice = "0x0";
+		rawTx.value = "0x0";
+
+		// sign transaction
+		const signedTx = await voter.signTransaction(rawTx);
+
+		// send transaction
+		const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction);
+		chai.expect(Number(txr.status)).to.equal(1);
+
+		// check if the voter added
+		const isVoterExists = await contractInstance.methods.isVoterExists(voter.address).call();
+		chai.expect(isVoterExists).to.equal(true);
+	});
 	/*
 		// add/remove election commitee
 		it("Should add and remove election committee members", async function () {
