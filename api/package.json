@@ -26,6 +26,7 @@
 		"chai-http": "^4.4.0",
 		"chai-uuid": "^1.0.6",
 		"hardhat": "^2.22.2",
-		"mocha": "^10.4.0"
+		"mocha": "^10.4.0",
+		"pino-pretty": "^11.0.0"
 	}
 }

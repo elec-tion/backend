@@ -16,4 +16,5 @@ router.route("/committeememberwithelection/:addr/:elecId").post(addElectionCommi
 router.route("/committeememberwithelection/:elecId/:addr").delete(removeElectionCommitteeMemberFromElection);
 
 router.route("/committeemember/:addr").get(getElectionCommitteeMemberDetails);
+
 module.exports = router;

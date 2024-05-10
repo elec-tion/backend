@@ -1,6 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
-const logger = require("../utils");
 const { serialize } = require("../utils");
+const logger = require("../utils");
 
 const asyncHandler = require("express-async-handler");
 const uuid = require("uuid");
@@ -51,6 +51,49 @@ const createElection = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1, id: _id, txr: _txr });
 });
 
+
+// @route PATCH /api/election/:id/:name/:startDate/:endDate
+// @access private
+const editElection = asyncHandler(async (req, res) => {
+	logger.info("Calling editElection..");
+
+	// Create raw transaction
+	let rawTx = {
+		from: adminAccount.address,
+		to: contractInstance.options.address,
+		data: contractInstance.methods.editElection(req.params.name, req.params.startDate, req.params.endDate, req.params.id).encodeABI(),
+	};
+
+	// estimate gas
+	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+		logger.error("Error estimating gas:", err);
+		res.status(500).json({ success: 0 });
+	});
+
+	// convert gas estimate and set gas limit, gas price
+	const _gasLimit = chain.utils.numberToHex(gasEstimate);
+	rawTx.gasLimit = _gasLimit;
+	rawTx.gasPrice = "0x0";
+
+	// sign transaction
+	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
+		logger.error("Error signing transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
+
+	// send transaction
+	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+		logger.error("Error sending transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
+
+	// transaction receipt converter	
+	const _txr = serialize(txr);
+	logger.info("editElection succeeded");
+	logger.info(_txr, "editElection transaction receipt: ");
+
+	res.status(200).json({ success: 1, txr: _txr });
+});
 
 // @route GET /api/election/:id
 // @access private
@@ -162,6 +205,7 @@ module.exports = {
 	getElectionDetails,
 	getElectionsLength,
 	createElection,
+	editElection,
 	removeElection,
 	getElectionIDs,
 };

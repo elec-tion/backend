@@ -25,4 +25,4 @@ module.exports = {
     voterAccounts,
     candidateAccounts,
     electionCommitteeAccounts
-}
+};
