@@ -164,6 +164,8 @@ const getElectionsLength = asyncHandler(async (req, res) => {
 // @route DELETE /api/election/:id
 // @access private
 const removeElection = asyncHandler(async (req, res) => {
+	logger.info("Calling removeElection..");
+
 	// Create raw transaction
 	let rawTx = {
 		from: adminAccount.address,
@@ -197,6 +199,7 @@ const removeElection = asyncHandler(async (req, res) => {
 	// transaction receipt converter
 	const _txr = serialize(txr);
 
+	logger.info("removeElection succeeded");
 	logger.info(_txr, "removeElection transaction receipt:");
 	res.status(200).json({ success: 1, txr: _txr });
 });
