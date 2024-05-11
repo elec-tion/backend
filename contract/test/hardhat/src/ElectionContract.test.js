@@ -46,6 +46,27 @@ describe("ElectionContract", function () {
 		expect(electionExist).to.equal(true);
 	});
 
+	// edit election (by admin)
+	it("Should edit an election", async function () {
+		// create id for election
+		const _id = uuid.v4();
+
+		// create election
+		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800, _id);
+
+		// edit election
+		await hardhatToken.connect(admin).editElection("Test Election 2", 1648886400, 1648972800, _id);
+
+		// check if the election content is correcly set
+		let adminElection = await hardhatToken.connect(admin).elections(_id);
+		expect(adminElection.name).to.equal("Test Election 2");
+		expect(adminElection.startDate).to.equal(1648886400);
+		expect(adminElection.endDate).to.equal(1648972800);
+		expect(adminElection.id).to.equal(_id);
+	});
+
+
+
 	// add committe member to election (by admin)
 	it("Should add a committe member to an election", async function () {
 		// create id for election
@@ -333,7 +354,7 @@ describe("ElectionContract", function () {
 		await hardhatToken.connect(admin).addDistrictToVoter(voter.address, "01");
 
 		// check if the district added to the voter
-		let voterDetail = await hardhatToken.connect(admin).getVoter(voter.address);
+		let voterDetail = await hardhatToken.connect(admin).getVoterDetails(voter.address);
 		let voterDistrict = await voterDetail.district;
 		expect(voterDistrict.districtID).to.equal("01");
 	});
@@ -354,9 +375,47 @@ describe("ElectionContract", function () {
 
 		// check if the district removed from the voter
 		// getVoter() -> Voter(struct) -> District(struct) -> districtID(string)
-		let voterDetail = await hardhatToken.connect(admin).getVoter(voter.address);
+		let voterDetail = await hardhatToken.connect(admin).getVoterDetails(voter.address);
 		let voterDistrict = await voterDetail.district;
 		expect(voterDistrict.districtID).to.equal("null");
+	});
+
+	// vote (by voter)
+	it("Should vote", async function () {
+		// add a voter
+		await hardhatToken.connect(voter).addVoter();
+
+		// create id for election
+		const _id = uuid.v4();
+		
+		// create election
+		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800, _id);
+
+		// add a district
+		await hardhatToken.connect(admin).addDistrict("Test District", "01");
+
+		// add district to voter
+		await hardhatToken.connect(admin).addDistrictToVoter(voter.address, "01");
+
+		// add a candidate
+		await hardhatToken.connect(admin).addCandidate("Test Candidate", "01", candidate.address);
+
+		// add candidate to election
+		await hardhatToken.connect(admin).addCandidateToElection(_id, candidate.address);
+
+		// vote
+		await hardhatToken.connect(voter).vote(_id, candidate.address);
+
+		// check if the vote has been added
+		let candidateDetail = await hardhatToken.connect(admin).candidates(candidate.address);
+		let candidateVoteCount = await candidateDetail.voteCount;
+		let isElectionVoted = await hardhatToken.connect(voter).isElectionVotedByVoter[voter.address][_id];
+		console.log(candidateDetail);
+		console.log(candidateVoteCount);
+		console.log(isElectionVoted);
+		// expect(candidateVoteCount).to.equal(1);
+		 expect(isElectionVoted).to.equal(true);
+		// expect(await hardhatToken.connect(voter).isElectionVotedByVoter("02")).to.equal(false);
 	});
 
 	// get voter's elections
@@ -379,15 +438,15 @@ describe("ElectionContract", function () {
 		expect(elections[1]).to.equal(_id2);
 	});
 
-	// get voter (by admin)
-	it("Should get voter", async function () {
+	// get voter details (by admin)
+	it("Should get voter details", async function () {
 		// add a voter
 		await hardhatToken.connect(voter).addVoter();
 
-		// get voter
-		const voterDetail = await hardhatToken.connect(admin).voters(voter.address);
-		expect(voterDetail[0]).to.equal("null");
-		expect(voterDetail[1]).to.equal("null");
+		// get voter details and check if the voter's districts and election ids are null
+		const voterDetail = await hardhatToken.connect(admin).getVoterDetails(voter.address);
+		expect(voterDetail.district.districtID).to.equal("null");
+		expect(voterDetail.electionIDs).to.be.empty;
 	});
 
 	// get Election Committee Members array length
