@@ -438,6 +438,15 @@ contract ElectionContract {
         // Check if the candidate exists
         require(isCandidateExists[_candidate], "Candidate does not exists");
 
+        // Check if that candidate is added to that election
+        bool found = false;
+        for (uint i = 0; i < elections[_electionId].candidateAddresses.length; i++) {
+            if (elections[_electionId].candidateAddresses[i] == _candidate) {
+                found = true;
+            }
+        }
+        require(found, "This candidate is not assigned to this election");
+
         // Check if the voter has already voted
         require(!isElectionVotedByVoter[msg.sender][_electionId], "Voter has already voted");
 
