@@ -58,7 +58,7 @@ const getCandidate = asyncHandler(async (req, res) => {
 		});
 
 	logger.info("getCandidate succeeded");
-	res.status(200).json({
+	res.status(200).json(serialize({
 		name: candidate.name,
 		wallet: candidate.wallet,
 		district: {
@@ -66,7 +66,7 @@ const getCandidate = asyncHandler(async (req, res) => {
 			name: candidate.district.name,
 		},
 		voteCount: candidate.voteCount,
-	});
+	}));
 });
 
 // @route POST /api/candidate/:elecId/:addr
