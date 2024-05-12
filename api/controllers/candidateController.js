@@ -65,6 +65,7 @@ const getCandidate = asyncHandler(async (req, res) => {
 			id: candidate.district.districtID,
 			name: candidate.district.name,
 		},
+		voteCount: candidate.voteCount,
 	});
 });
 
