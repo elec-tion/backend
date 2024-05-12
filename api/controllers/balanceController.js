@@ -1,5 +1,6 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
 const asyncHandler = require("express-async-handler");
+const { serialize } = require("../utils");
 const logger = require("../utils");
 
 // @route GET /api/balance/:wallet_id

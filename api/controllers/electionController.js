@@ -1,8 +1,7 @@
 const { chain, adminAccount, contractInstance } = require("../../chain");
+const asyncHandler = require("express-async-handler");
 const { serialize } = require("../utils");
 const logger = require("../utils");
-
-const asyncHandler = require("express-async-handler");
 const uuid = require("uuid");
 
 // @route POST /api/election/:name/:startDate/:endDate
