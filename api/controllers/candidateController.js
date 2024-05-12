@@ -72,7 +72,7 @@ const getCandidate = asyncHandler(async (req, res) => {
 // @route POST /api/candidate/:elecId/:addr
 // @access private
 const addCandidateToElection = asyncHandler(async (req, res) => {
-	log.info("Calling addCandidateToElection..");
+	logger.info("Calling addCandidateToElection..");
 
 	// Create raw transaction
 	let rawTx = {
