@@ -26,6 +26,7 @@ app.use("/api", require("./routes/electionRoutes"));
 app.use("/api", require("./routes/committeMembersRoutes"));
 app.use("/api", require("./routes/candidateRoutes"));
 app.use("/api", require("./routes/voterRoutes"));
+app.use("/api", require("./routes/contractRoutes"));
 
 app.listen(PORT, IP, () => logger.info(`server started on port http://${IP}:${PORT}`));
 
