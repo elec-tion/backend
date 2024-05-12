@@ -495,7 +495,6 @@ contract ElectionContract {
         return districts[_districtId];
     }
 
-
     // Funtion to return specific candidate's details
     function getCandidateDetails(address _wallet) public view returns (Candidate memory) {
         // Check if the candidate already exists
