@@ -50,7 +50,7 @@ const addDistrict = asyncHandler(async (req, res) => {
 // @access private
 const getDistrict = asyncHandler(async (req, res) => {
 	logger.info("Calling getDistrict..");
-	
+
 	try {
 		const fCall = await contractInstance.methods.getDistrictDetails(req.params.id).call();
 		logger.info("getDistrict succeeded");
@@ -164,7 +164,7 @@ const removeDistrict = asyncHandler(async (req, res) => {
 
 	// estimate gas
 	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
-		logger.error("Error estimating gas:", err);
+		logger.error(err, "Error estimating gas:");
 		res.status(500).json({ success: 0 });
 	});
 
@@ -175,13 +175,13 @@ const removeDistrict = asyncHandler(async (req, res) => {
 
 	// sign transaction
 	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
-		logger.error("Error signing transaction:", err);
+		logger.error(err, "Error signing transaction:");
 		res.status(500).json({ success: 0 });
 	});
 
 	// send transaction
 	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
-		logger.error("Error sending transaction:", err);
+		logger.error(err, "Error sending transaction:");
 		res.status(500).json({ success: 0 });
 	});
 
