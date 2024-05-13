@@ -47,26 +47,26 @@ const addCandidate = asyncHandler(async (req, res) => {
 // @route GET /api/candidate/:addr
 // @access private
 const getCandidate = asyncHandler(async (req, res) => {
-	logger.info("Calling getCandidate..")
-	const candidate = await contractInstance.methods
-		.getCandidateDetails(req.params.addr)
-		.call()
-		.catch((err) => {
-			err.params = req.params;
-			logger.error(err, "Error getting candidate details:");
-			res.status(500).json({ success: 0 });
-		});
+	logger.info("Calling getCandidate..");
 
-	logger.info("getCandidate succeeded");
-	res.status(200).json(serialize({
-		name: candidate.name,
-		wallet: candidate.wallet,
-		district: {
-			id: candidate.district.districtID,
-			name: candidate.district.name,
-		},
-		voteCount: candidate.voteCount,
-	}));
+	try {
+		const candidate = await contractInstance.methods.getCandidateDetails(req.params.addr).call();
+		logger.info("getCandidate succeeded");
+		res.status(200).json(
+			serialize({
+				name: candidate.name,
+				wallet: candidate.wallet,
+				district: {
+					id: candidate.district.districtID,
+					name: candidate.district.name,
+				},
+				voteCount: candidate.voteCount,
+			})
+		);
+	} catch (err) {
+		logger.error(err, "Error getting candidate details:");
+		res.status(500).json({ success: 0 });
+	}
 });
 
 // @route POST /api/candidate/:elecId/:addr

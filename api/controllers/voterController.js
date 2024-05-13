@@ -16,12 +16,10 @@ const addVoterToElection = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth
-		.estimateGas(rawTx)
-		.catch((err) => {
-			logger.error("Error estimating gas:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+		logger.error("Error estimating gas:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -29,20 +27,16 @@ const addVoterToElection = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount
-		.signTransaction(rawTx)
-		.catch((err) => {
-			logger.error("Error signing transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
+		logger.error("Error signing transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// send transaction
-	const txr = await chain.eth
-		.sendSignedTransaction(signedTx.rawTransaction)
-		.catch((err) => {
-			logger.error("Error sending transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+		logger.error("Error sending transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
@@ -65,12 +59,10 @@ const addDistrictToVoter = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth
-		.estimateGas(rawTx)
-		.catch((err) => {
-			logger.error("Error estimating gas:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+		logger.error("Error estimating gas:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -78,20 +70,16 @@ const addDistrictToVoter = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount
-		.signTransaction(rawTx)
-		.catch((err) => {
-			logger.error("Error signing transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
+		logger.error("Error signing transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// send transaction
-	const txr = await chain.eth
-		.sendSignedTransaction(signedTx.rawTransaction)
-		.catch((err) => {
-			logger.error("Error sending transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+		logger.error("Error sending transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
@@ -114,12 +102,10 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth
-		.estimateGas(rawTx)
-		.catch((err) => {
-			logger.error("Error estimating gas:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+		logger.error("Error estimating gas:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -127,20 +113,16 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount
-		.signTransaction(rawTx)
-		.catch((err) => {
-			logger.error("Error signing transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
+		logger.error("Error signing transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// send transaction
-	const txr = await chain.eth
-		.sendSignedTransaction(signedTx.rawTransaction)
-		.catch((err) => {
-			logger.error("Error sending transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+		logger.error("Error sending transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
@@ -153,7 +135,7 @@ const removeDistrictFromVoter = asyncHandler(async (req, res) => {
 // @route DELETE /api/voterwithelection/:elecId/:addr
 // @access private
 const removeVoterFromElection = asyncHandler(async (req, res) => {
-	logger.info("Calling removeVoterFromElection..");	
+	logger.info("Calling removeVoterFromElection..");
 
 	// Create raw transaction
 	let rawTx = {
@@ -163,12 +145,10 @@ const removeVoterFromElection = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth
-		.estimateGas(rawTx)
-		.catch((err) => {
-			logger.error("Error estimating gas:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+		logger.error("Error estimating gas:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -176,20 +156,16 @@ const removeVoterFromElection = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount
-		.signTransaction(rawTx)
-		.catch((err) => {
-			logger.error("Error signing transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
+		logger.error("Error signing transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// send transaction
-	const txr = await chain.eth
-		.sendSignedTransaction(signedTx.rawTransaction)
-		.catch((err) => {
-			logger.error("Error sending transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+		logger.error("Error sending transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
@@ -212,12 +188,10 @@ const removeVoter = asyncHandler(async (req, res) => {
 	};
 
 	// estimate gas
-	const gasEstimate = await chain.eth
-		.estimateGas(rawTx)
-		.catch((err) => {
-			logger.error("Error estimating gas:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const gasEstimate = await chain.eth.estimateGas(rawTx).catch((err) => {
+		logger.error("Error estimating gas:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// convert gas estimate and set gas limit, gas price
 	const _gasLimit = chain.utils.numberToHex(gasEstimate);
@@ -225,20 +199,16 @@ const removeVoter = asyncHandler(async (req, res) => {
 	rawTx.gasPrice = "0x0";
 
 	// sign transaction
-	const signedTx = await adminAccount
-		.signTransaction(rawTx)
-		.catch((err) => {
-			logger.error("Error signing transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const signedTx = await adminAccount.signTransaction(rawTx).catch((err) => {
+		logger.error("Error signing transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// send transaction
-	const txr = await chain.eth
-		.sendSignedTransaction(signedTx.rawTransaction)
-		.catch((err) => {
-			logger.error("Error sending transaction:", err);
-			res.status(500).json({ success: 0 });
-		});
+	const txr = await chain.eth.sendSignedTransaction(signedTx.rawTransaction).catch((err) => {
+		logger.error("Error sending transaction:", err);
+		res.status(500).json({ success: 0 });
+	});
 
 	// transaction receipt converter
 	const _txr = serialize(txr);
@@ -253,24 +223,21 @@ const removeVoter = asyncHandler(async (req, res) => {
 const getVoterDetails = asyncHandler(async (req, res) => {
 	logger.info("Calling getVoterDetails..");
 
-	const fCall = await contractInstance.methods
-		.getVoterDetails(req.params.addr)
-		.call({from: adminAccount.address})
-		.catch((err) => {
-			logger.error(err, "Error calling getDistrictDetails:");
-			res.status(500).json({ success: 0 });
+	try {
+		const fCall = await contractInstance.methods.getVoterDetails(req.params.addr).call({ from: adminAccount.address });
+		logger.info("getVoterDetails succeeded");
+		logger.info("Voter details: ");
+		res.status(200).json({
+			district: {
+				name: fCall.district.name,
+				id: fCall.district.districtID,
+			},
+			electionIDs: fCall.electionIDs,
 		});
-
-	logger.info("getVoterDetails succeeded");
-	logger.info("Voter details: ");
-	res.status(200).json({
-		district: {
-			name: fCall.district.name,
-			id: fCall.district.districtID
-		},
-		electionIDs: fCall.electionIDs
-	});
-
+	} catch (err) {
+		logger.error(err, "Error calling getDistrictDetails:");
+		res.status(500).json({ success: 0 });
+	}
 });
 
 module.exports = {

@@ -50,7 +50,6 @@ const createElection = asyncHandler(async (req, res) => {
 	res.status(200).json({ success: 1, id: _id, txr: _txr });
 });
 
-
 // @route PATCH /api/election/:id/:name/:startDate/:endDate
 // @access private
 const editElection = asyncHandler(async (req, res) => {
@@ -86,7 +85,7 @@ const editElection = asyncHandler(async (req, res) => {
 		res.status(500).json({ success: 0 });
 	});
 
-	// transaction receipt converter	
+	// transaction receipt converter
 	const _txr = serialize(txr);
 	logger.info("editElection succeeded");
 	logger.info(_txr, "editElection transaction receipt: ");
@@ -98,31 +97,29 @@ const editElection = asyncHandler(async (req, res) => {
 // @access private
 const getElectionDetails = asyncHandler(async (req, res) => {
 	logger.info("Calling getElectionDetails..");
-	logger.info(req.params.id);
-	// let body = getElectionDetailsEB(req.params.id);
-	// logger.info(body);
-	// if (body === null) {
-	// 	res.status(500).json({ success: 0 });
-	// } else {
-	// 	res.status(200).json(body);
-	// }
-	const fCall = await contractInstance.methods
-		.getElectionDetails(req.params.id)
-		.call()
-		.catch((err) => {
-			logger.error(err, "Error getting election details:");
-			res.status(500).json({ success: 0 });
+
+	try {
+		// let body = getElectionDetailsEB(req.params.id);
+		// logger.info(body);
+		// if (body === null) {
+		// 	res.status(500).json({ success: 0 });
+		// } else {
+		// 	res.status(200).json(body);
+		// }
+		const fCall = await contractInstance.methods.getElectionDetails(req.params.id).call();
+		res.status(200).json({
+			id: fCall.id,
+			name: fCall.name,
+			districtIDs: fCall.districtIDs,
+			candidateAddresses: fCall.candidateAddresses,
+			electionCommittee: fCall.electionCommittee,
+			startDate: Number(fCall.startDate),
+			endDate: Number(fCall.endDate),
 		});
-	
-	res.status(200).json({
-		id: fCall.id,
-		name: fCall.name,
-		districtIDs: fCall.districtIDs,
-		candidateAddresses: fCall.candidateAddresses,
-		electionCommittee: fCall.electionCommittee,
-		startDate: Number(fCall.startDate),
-		endDate: Number(fCall.endDate),
-	});
+	} catch (err) {
+		logger.error(err, "Error getting election details:");
+		res.status(500).json({ success: 0 });
+	}
 });
 
 // @route GET /api/electionids
@@ -130,34 +127,32 @@ const getElectionDetails = asyncHandler(async (req, res) => {
 const getElectionIDs = asyncHandler(async (req, res) => {
 	logger.info("Calling getElectionIDs..");
 
-	const fCall = await contractInstance.methods
-		.getElectionIDs()
-		.call()
-		.catch((err) => {
-			logger.error(err, "Error getting election IDs:");
-			res.status(500).json({ success: 0 });
+	try {
+		const fCall = await contractInstance.methods.getElectionIDs().call();
+		res.status(200).json({
+			ids: fCall,
 		});
-
-	res.status(200).json({
-		ids: fCall,
-	});
+	} catch (err) {
+		logger.error(err, "Error getting election IDs:");
+		res.status(500).json({ success: 0 });
+	}
 });
 
 // @route GET /api/election
 // @access private
 const getElectionsLength = asyncHandler(async (req, res) => {
-	const fCall = await contractInstance.methods
-		.getElectionsLength()
-		.call()
-		.catch((err) => {
-			logger.error(err, "Error calling getElectionsLength:");
-			res.status(500).json({ success: 0 });
-		});
+	logger.info("Calling getElectionsLength..");
 
-	logger.info(`fCall: ${fCall}`);
-	res.status(200).json({
-		length: Number(fCall),
-	});
+	try {
+		const fCall = await contractInstance.methods.getElectionsLength().call();
+		logger.info(`fCall: ${fCall}`);
+		res.status(200).json({
+			length: Number(fCall),
+		});
+	} catch (err) {
+		logger.error(err, "Error calling getElectionsLength:");
+		res.status(500).json({ success: 0 });
+	}
 });
 
 // @route DELETE /api/election/:id
