@@ -387,9 +387,11 @@ describe("ElectionContract", function () {
 
 		// create id for election
 		const _id = uuid.v4();
+		const _id2 = uuid.v4();
 		
 		// create election
 		await hardhatToken.connect(admin).createElection("Test Election", 1648886400, 1648972800, _id);
+		await hardhatToken.connect(admin).createElection("Test Election 2", 1648886400, 1648972800, _id2);
 
 		// add a district
 		await hardhatToken.connect(admin).addDistrict("Test District", "01");
@@ -409,13 +411,12 @@ describe("ElectionContract", function () {
 		// check if the vote has been added
 		let candidateDetail = await hardhatToken.connect(admin).candidates(candidate.address);
 		let candidateVoteCount = await candidateDetail.voteCount;
-		let isElectionVoted = await hardhatToken.connect(voter).isElectionVotedByVoter[voter.address][_id];
-		console.log(candidateDetail);
-		console.log(candidateVoteCount);
-		console.log(isElectionVoted);
-		// expect(candidateVoteCount).to.equal(1);
-		 expect(isElectionVoted).to.equal(true);
-		// expect(await hardhatToken.connect(voter).isElectionVotedByVoter("02")).to.equal(false);
+		let isElectionVoted = await hardhatToken.connect(admin).isElectionVotedByVoter(voter.address, _id);
+		let isElectionVoted2 = await hardhatToken.connect(admin).isElectionVotedByVoter(voter.address, _id2);
+
+		expect(candidateVoteCount).to.equal(BigInt(1));
+		expect(isElectionVoted).to.equal(true);
+		expect(isElectionVoted2).to.equal(false);
 	});
 
 	// get voter's elections
