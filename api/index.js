@@ -11,15 +11,20 @@ const IP = process.env.IP || "localhost";
 
 const app = express();
 
+// This two route is for welcoming and testing the API
+app.get("/", (req, res) => {
+    res.status(200).json({"message": "Welcome to the API"});
+});
+app.get("/api", (req, res) => {
+    res.status(200).json({"message": "API is running"});
+});
+
 app.use(apiKeyAuth);
 app.use(errorHandler);
 app.use(express.json());
 app.use(expressPinoLogger({ logger }));
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/api", (req, res) => {
-    res.status(200).json({"message": "API is running"});
-});
 app.use("/api", require("./routes/balanceRoutes"));
 app.use("/api", require("./routes/districtRoutes"));
 app.use("/api", require("./routes/electionRoutes"));
