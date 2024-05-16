@@ -1,5 +1,13 @@
+const fs = require("fs");
+const path = require("path");
 const pino = require("pino");
 
+/**
+ * Serializes an object recursively, converting BigInt values to Numbers.
+ *
+ * @param {object} obj - The object to be serialized.
+ * @return {object} The serialized object with BigInt values converted to Numbers.
+ */
 const serialize = (obj) => {
 	const serialized = {};
 	for (const key in obj) {
@@ -18,6 +26,12 @@ const serialize = (obj) => {
 	return serialized;
 };
 
+const logDir = path.join(__dirname, "..", "logs");
+const date = new Date();
+const formattedDate = date.toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '.').replace(/-/g, '.');
+if (!fs.existsSync(logDir)) {
+	fs.mkdirSync(logDir);
+}
 const logger = pino(
 	{},
 	pino.transport({
@@ -26,7 +40,7 @@ const logger = pino(
 				level: "trace",
 				target: "pino/file",
 				options: {
-					destination: "./logs/api.log",
+					destination: path.join(logDir, `api.trace.${formattedDate}.log`),
 				},
 			},
 			{
