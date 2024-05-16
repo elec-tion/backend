@@ -1,0 +1,15 @@
+---
+
+services:
+  e-lection-api:
+    container_name: 'e-lection-api'
+    image: 'e-lection:api'
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    env_file:
+      - '../.env'
+    ports:
+      - '0.0.0.0:<PORT_WHAT_DO_YOU_WANT>:<PORT_AT_ENV_FILE>'
+    volumes:
+      - '../container_data/logs:/app/logs'

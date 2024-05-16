@@ -1,0 +1,20 @@
+# Ignore node_modules directory
+node_modules
+
+# Ignore npm debug log
+npm-debug.log
+
+# Ignore any files or directories starting with a dot
+.*
+
+# Ignore development files
+*.md
+*.txt
+*.log
+*.json
+.prettierrc
+
+# Ignore build artifacts
+dist
+build
+logs

@@ -21,7 +21,7 @@
 
 	Fill in the values for the following variables in the `.env` file:
 	```env
-	IP=<LOCAL_IP>
+	IP=<LOCAL_IP> # If you are using Docker, use 0.0.0.0
 	PORT=<PORT_NUMBER>
 	CHAIN_RPC=http://<IP>:8545
 	ADMIN_KEY=<KEY_TO_CREATE_PRIVATE_KEY>
@@ -30,20 +30,44 @@
 	```
 	*`ADMIN_KEY` should be the same with in the contract `.env` file*
 
-## Run the API with Nodemon
+## Without Docker
+### Run the API with Nodemon
 
 ```bash
 $ npm run server
 ```
 
-## Run the API with Node.js
+### Run the API with Node.js
 
 ```bash
 $ npm run start
 ```
 
-## Run the tests with Mocha
+## Test
+### Run the tests with Mocha
 
 ```bash
 $ npm run test
+```
+
+## Docker
+### Build the Docker image
+
+```bash
+$ docker build -t e-election:api .
+```
+
+### Run the Docker image
+
+```bash
+$ docker run --env-file .env -p <PORT_WHAT_DO_YOU_WANT>:<PORT_AT_ENV_FILE> e-election:api
+```
+
+### Docker Compose
+
+1. Edit the `docker-compose.yml` file for port mapping.
+
+2. Run the Docker Compose file
+```bash
+$ docker-compose up -d
 ```
