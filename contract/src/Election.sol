@@ -517,4 +517,16 @@ contract ElectionContract {
 
         return voters[_voter];
     }
+
+    // Function to get is Voter elected at spesific election
+    function isVoterElected(address _voter, string memory _electionId) public view onlyAdmin returns (bool) {
+        // check if the voter exists. 
+        require(isVoterExists[_voter], "User not exist");
+        
+        // Check if the election exists
+        require(isElectionExists[_electionId], "Election does not exist");
+
+        // Check if the voter has voted
+        return isElectionVotedByVoter[_voter][_electionId];
+    }
 }

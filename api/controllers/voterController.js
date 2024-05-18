@@ -224,9 +224,12 @@ const getVoterDetails = asyncHandler(async (req, res) => {
 	logger.info("Calling getVoterDetails..");
 
 	try {
-		const fCall = await contractInstance.methods.getVoterDetails(req.params.addr).call({ from: adminAccount.address });
+		const fCall = await contractInstance.methods
+			.getVoterDetails(req.params.addr)
+			.call({ from: adminAccount.address });
+
 		logger.info("getVoterDetails succeeded");
-		logger.info("Voter details: ");
+		logger.info(serialize(fCall), "Voter details: ");
 		res.status(200).json({
 			district: {
 				name: fCall.district.name,
@@ -240,6 +243,27 @@ const getVoterDetails = asyncHandler(async (req, res) => {
 	}
 });
 
+// @route GET /api/voterwithelection/:addr/:eledId
+// @access private
+const isVoterElected = asyncHandler(async (req, res) => {
+	logger.info("Calling isVoterElected..");
+
+	try {
+		const fCall = await contractInstance.methods
+			.isVoterElected(req.params.addr, req.params.elecId)
+			.call({ from: adminAccount.address });
+		
+		logger.info("isVoterElected succeeded");
+		logger.info(serialize(fCall), "isVoterElected: ");
+		res.status(200).json({
+			isElected: fCall
+		});
+	} catch (err) {
+		logger.error(err, "Error calling isVoterElected:");
+		res.status(500).json({ success: 0 });
+	}		
+})
+
 module.exports = {
 	addVoterToElection,
 	addDistrictToVoter,
@@ -247,4 +271,5 @@ module.exports = {
 	removeVoterFromElection,
 	removeVoter,
 	getVoterDetails,
+	isVoterElected,
 };
