@@ -423,7 +423,7 @@ contract ElectionContract {
     }
 
     // Voter give vote
-    function vote(string memory _electionId, address _candidate) public {
+    function vote(string memory _electionId, address _candidate, bool isRegional) public {
         // Check if the voter exists
         require(isVoterExists[msg.sender], "Voter does not exist");
 
@@ -442,8 +442,11 @@ contract ElectionContract {
         }
         require(found, "This candidate is not assigned to this election");
 
-        // Check if the voter has already voted
-        require(!isElectionVotedByVoter[msg.sender][_electionId], "Voter has already voted");
+        // Check is election is regional
+        if (!isRegional) {
+            // Check if the voter has already voted
+            require(!isElectionVotedByVoter[msg.sender][_electionId], "Voter has already voted");
+        }
 
         // Add the voter's vote
         candidates[_candidate].voteCount += 1;
