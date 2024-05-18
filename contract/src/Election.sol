@@ -67,11 +67,6 @@ contract ElectionContract {
         _;
     }
 
-    // Modifier to restrict access to election committee members only
-    modifier onlyElectionCommittee() {
-        require(isElectionComitteMemberExists[msg.sender], "Only election committee members can call this function");
-        _;
-    }
 
     // Constructor to set the initial admin
     constructor() {
