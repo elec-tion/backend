@@ -890,3 +890,203 @@ describe("Committee-Election", async () => {
 		await removeElection(reqElection, resElection);
 	});
 });
+
+describe("Candidate-Election", async () => {
+	// Add a district, an election and a candidate to the contract for testing election functions
+	let elecId;
+	before(async () => {
+		const reqDistrict = {
+			params: {
+				name: "Test District",
+				id: "01",
+			},
+		};
+		const reqElection = {
+			params: {
+				name: "Test Election",
+				startDate: 1324556,
+				endDate: 1724557,
+			},
+		}
+		const reqCandidate = {
+			params: {
+				name: "candidateName",
+				addr: candidateAccounts[0].address,
+				districtId: "01",
+			},
+		};
+		const resElection = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resElection;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+
+				chai.expect(data).to.have.property("id");
+				chai.expect(data.id).to.be.a("string");
+				chai.expect(data.id).to.be.a.uuid("v4");
+				
+				elecId = data.id;
+			},
+		};
+		const resDistrict = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resDistrict;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+		const resCandidate = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resCandidate;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await addDistrict(reqDistrict, resDistrict);
+		elec = await createElection(reqElection, resElection);
+		await addCandidate(reqCandidate, resCandidate);
+	});
+
+	it("should successfully add a candidate to an election", async () => {
+		const req = {
+			params: {
+				elecId: elecId,
+				addr: candidateAccounts[0].address,
+			},
+		};
+		const res = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return res;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await addCandidateToElection(req, res);
+	});
+
+	it("should successfully remove a candidate from an election", async () => {
+		const req = {
+			params: {
+				elecId: elecId,
+				addr: candidateAccounts[0].address,
+			},
+		};
+		const res = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return res;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+			},
+		};
+
+		await removeCandidateFromElection(req, res);
+	});
+
+	// Removes district, election and candidate from contract for testing
+	after(async () => {
+		const reqElection = {
+			params: {
+				id: elecId,
+			},
+		};
+		const reqDistrict = {
+			params: {
+				id: "01",
+			},
+		};
+		const reqCandidate = {
+			params: {
+				addr: candidateAccounts[0].address,
+			},
+		};
+
+		const resElection = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resElection;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+				
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+		const resDistrict = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resDistrict;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+				
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+		const resCandidate = {
+			status: function (statusCode) {
+				chai.expect(statusCode).to.equal(200);
+				return resCandidate;
+			},
+			json: function (data) {
+				chai.expect(data).to.have.property("success");
+				chai.expect(data.success).to.be.a("number");
+				chai.expect(data.success).to.equal(1);
+
+				chai.expect(data.txr).to.have.property("status");
+				chai.expect(data.txr.status).to.be.a("number");
+				chai.expect(data.txr.status).to.equal(1);
+			},
+		};
+
+		await removeElection(reqElection, resElection);
+		await removeCandidate(reqCandidate, resCandidate);
+		await removeDistrict(reqDistrict, resDistrict);
+
+	});
+});
