@@ -2,11 +2,20 @@
 
 services:
   e-lection-api:
-    container_name: 'e-lection-api'
     image: 'e-lection:api'
     build:
       context: .
       dockerfile: 'Dockerfile'
+      args:
+        - 'ADMIN_KEY=${ADMIN_KEY}'
+        - 'CHAIN_RPC=${CHAIN_RPC}'
+        - 'CONTRACT_ABI_PATH=${CONTRACT_ABI_PATH}'
+        - 'CONTRACT_ADDRESS_PATH=${CONTRACT_ADDRESS_PATH}'
+        - 'PORT=${PORT}'
+        - 'IP=0.0.0.0'
+    container_name: 'e-lection-api'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway' # this is needed for blockchain and api server on same server
     env_file:
       - '../.env'
     ports:
