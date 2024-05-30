@@ -10,6 +10,12 @@ WORKDIR /app
 # Copy whole packages directory
 COPY . .
 
+# Copy .env file inside docker container
+COPY .env /app/api/.env
+COPY .env /app/chain/.env
+COPY .env /app/contract/.env
+
+# Set environment variables
 ARG ADMIN_KEY
 ENV ADMIN_KEY=${ADMIN_KEY}
 ARG BUILD_PATH
@@ -31,5 +37,15 @@ ENV PORT=${PORT}
 ARG IP
 ENV IP=${IP}
 
-# Install dependencies in api
+# Install dependencies in modules
 RUN npm install --prefix /app/api
+RUN npm install --prefix /app/chain
+RUN npm install --prefix /app/contract
+
+# Compile contract
+RUN npm run --prefix /app/contract compile
+# Deploy contract
+RUN npm run --prefix /app/contract deploy
+
+# Run API server
+CMD ["npm", "run", "--prefix", "/app/api", "start"]
