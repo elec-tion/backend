@@ -10,11 +10,6 @@ WORKDIR /app
 # Copy whole packages directory
 COPY . .
 
-# Copy .env file inside docker container
-COPY .env /app/api/.env
-COPY .env /app/chain/.env
-COPY .env /app/contract/.env
-
 # Set environment variables
 ARG ADMIN_KEY
 ENV ADMIN_KEY=${ADMIN_KEY}
@@ -36,6 +31,11 @@ ARG PORT
 ENV PORT=${PORT}
 ARG IP
 ENV IP=${IP}
+
+# Copy .env file inside docker container
+COPY .env api/
+COPY .env chain/
+COPY .env contract/
 
 # Install dependencies in modules
 RUN npm install --prefix /app/api
