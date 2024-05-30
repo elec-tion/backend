@@ -21,7 +21,7 @@
 
 	Fill in the values for the following variables in the `.env` file:
 	```env
-	IP=<LOCAL_IP> # If you are using Docker, use 0.0.0.0
+	IP=<LOCAL_IP>
 	PORT=<PORT_NUMBER>
 	CHAIN_RPC=http://<IP>:8545
 	ADMIN_KEY=<KEY_TO_CREATE_PRIVATE_KEY>
@@ -51,21 +51,22 @@ $ npm run test
 ```
 
 ## Docker
-### Build the Docker image
-
-```bash
-$ docker build -t e-election:api .
-```
-
-### Run the Docker image
-
-```bash
-$ docker run --env-file .env -p <PORT_WHAT_DO_YOU_WANT>:<PORT_AT_ENV_FILE> e-election:api
-```
-
 ### Docker Compose
 
 1. Edit the `docker-compose.yml` file for port mapping.
+
+2. Copy needed files to the `api/docker` directory
+```bash
+$ cp ../.env .
+$ cp ../../contract/build/ElectionContract.address .
+$ cp ../../contract/build/ElectionContract.abi .
+```
+
+3. Now you need to change the `api/docker/.env` file with the correct values for `CONTRACT_ABI_PATH` and `CONTRACT_ADDRESS_PATH`
+```env
+CONTRACT_ABI_PATH=/app/docker/ElectionContract.abi
+CONTRACT_ADDRESS_PATH=/app/docker/ElectionContract.address
+```
 
 2. Run the Docker Compose file
 ```bash
