@@ -33,9 +33,9 @@ ARG IP
 ENV IP=${IP}
 
 # Copy .env file inside docker container
-COPY .env api/
-COPY .env chain/
-COPY .env contract/
+COPY .env /app/api/
+COPY .env /app/chain/
+COPY .env /app/contract/
 
 # Install dependencies in modules
 RUN npm install --prefix /app/api
