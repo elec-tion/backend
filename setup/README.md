@@ -22,3 +22,7 @@ IP=<LOCAL_IP> # local ip 192.168.21.2, 0.0.0.0, localhost or 127.0.0.1
 PORT=<PORT_NUMBER>
 ```
 
+2. Run docker compose file with build argument
+```bash
+$ docker-compose up -d --force-recreate --build
+```
