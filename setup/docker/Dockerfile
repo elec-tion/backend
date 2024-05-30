@@ -36,9 +36,9 @@ ARG IP
 ENV IP=${IP}
 
 # Copy .env file inside docker container
-COPY .env /app/api/
-COPY .env /app/chain/
-COPY .env /app/contract/
+COPY setup/docker/.env /app/api/
+COPY setup/docker/.env /app/chain/
+COPY setup/docker/.env /app/contract/
 
 # Install dependencies in modules
 RUN pnpm install --prefix /app/api
