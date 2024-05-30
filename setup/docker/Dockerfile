@@ -1,6 +1,9 @@
 # Use the official Node.js 21 image as the base image
 FROM node:21
 
+# Install pnpm
+RUN npm install -g pnpm
+
 # Create a new directory for logs
 RUN mkdir -p /app/api/logs
 
@@ -38,14 +41,14 @@ COPY .env /app/chain/
 COPY .env /app/contract/
 
 # Install dependencies in modules
-RUN npm install --prefix /app/api
-RUN npm install --prefix /app/chain
-RUN npm install --prefix /app/contract
+RUN pnpm install --prefix /app/api
+RUN pnpm install --prefix /app/chain
+RUN pnpm install --prefix /app/contract
 
 # Compile contract
-RUN npm run --prefix /app/contract compile
+RUN pnpm run --prefix /app/contract compile
 # Deploy contract
-RUN npm run --prefix /app/contract deploy
+RUN pnpm run --prefix /app/contract deploy
 
 # Run API server
-CMD ["npm", "run", "--prefix", "/app/api", "start"]
+CMD ["pnpm", "run", "--prefix", "/app/api", "start"]
