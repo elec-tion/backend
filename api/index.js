@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv"); dotenv.config();
 const expressPinoLogger = require('express-pino-logger');
+const cors = require('cors');
 
 const { apiKeyAuth } = require('./middleware/authMiddleware');
 const { errorHandler } = require("./middleware/errorMiddleware");
@@ -19,6 +20,7 @@ app.get("/api", (req, res) => {
     res.status(200).json({"message": "API is running"});
 });
 
+app.use(cors()); // Add cors middleware to allow local requests
 app.use(apiKeyAuth);
 app.use(errorHandler);
 app.use(express.json());
