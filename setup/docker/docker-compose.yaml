@@ -27,3 +27,4 @@ services:
       - '0.0.0.0:<PORT_WHAT_DO_YOU_WANT>:<PORT_AT_ENV_FILE>'
     volumes:
       - './container_data/logs:/app/api/logs'
+      - './container_data/contract:/app/contract/build'

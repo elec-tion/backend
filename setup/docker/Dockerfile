@@ -47,8 +47,8 @@ RUN pnpm install --prefix /app/chain
 RUN pnpm install --prefix /app/contract
 
 # Compile and deploy contract if the CONTRACT_COMPILE_AND_DEPLOY environment variable is set to true
-RUN if [ "$CONTRACT_COMPILE_AND_DEPLOY" == "true" ]; then \
-    pnpm run --prefix /app/contract compile && \
+RUN if [ "$CONTRACT_COMPILE_AND_DEPLOY" = "true" ]; then \
+    pnpm run --prefix /app/contract compile; \
     pnpm run --prefix /app/contract deploy; \
 fi
 
