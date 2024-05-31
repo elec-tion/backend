@@ -9,6 +9,7 @@ services:
       context: '../../'
       dockerfile: 'setup/docker/Dockerfile'
       args:
+        CONTRACT_COMPILE_AND_DEPLOY: 'false'
         ADMIN_KEY: ${ADMIN_KEY}
         BUILD_PATH: ${BUILD_PATH}
         CHAIN_RPC: ${CHAIN_RPC}

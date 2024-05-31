@@ -14,6 +14,7 @@ WORKDIR /app
 COPY . .
 
 # Set environment variables
+ARG CONTRACT_COMPILE_AND_DEPLOY
 ARG ADMIN_KEY
 ENV ADMIN_KEY=${ADMIN_KEY}
 ARG BUILD_PATH
@@ -45,10 +46,11 @@ RUN pnpm install --prefix /app/api
 RUN pnpm install --prefix /app/chain
 RUN pnpm install --prefix /app/contract
 
-# Compile contract
-RUN pnpm run --prefix /app/contract compile
-# Deploy contract
-RUN pnpm run --prefix /app/contract deploy
+# Compile and deploy contract if the CONTRACT_COMPILE_AND_DEPLOY environment variable is set to true
+RUN if [ "$CONTRACT_COMPILE_AND_DEPLOY" == "true" ]; then \
+    pnpm run --prefix /app/contract compile && \
+    pnpm run --prefix /app/contract deploy; \
+fi
 
 # Run API server
 CMD ["pnpm", "run", "--prefix", "/app/api", "start"]
