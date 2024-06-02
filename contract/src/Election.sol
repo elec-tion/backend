@@ -342,6 +342,12 @@ contract ElectionContract {
         require(isElectionExists[_electionId], "Election does not exist");
         // check if the voter exists.
         require(isVoterExists[_voter], "Voter does not exist");
+        // Check if the voter already added to that election
+        for (uint i = 0; i < voters[_voter].electionIDs.length; i++) {
+            if (keccak256(abi.encodePacked((voters[_voter].electionIDs[i]))) == keccak256(abi.encodePacked((_electionId)))) {
+                require(false, "Voter already added to that election");
+            }
+        }
 
         // add voter's election
         voters[_voter].electionIDs.push(_electionId);
